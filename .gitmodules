@@ -4,3 +4,9 @@
 [submodule "vendors/glm"]
 	path = vendors/glm
 	url = git@github.com:ZhouyangYe/glm.git
+[submodule "vendors/stb"]
+	path = vendors/stb
+	url = git@github.com:ZhouyangYe/stb.git
+[submodule "vendors/fmt"]
+	path = vendors/fmt
+	url = git@github.com:fmtlib/fmt.git

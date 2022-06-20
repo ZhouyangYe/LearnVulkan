@@ -11,7 +11,13 @@ workspace "LearnVulkan"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDirs = {}
-IncludeDirs["GLFW"] = "vendors/GLFW"
+IncludeDirs["GLFW"] = "vendors/glfw"
+IncludeDirs["FMT"] = "vendors/fmt"
+IncludeDirs["GLM"] = "vendors/glm"
+IncludeDirs["STB"] = "vendors/stb"
+IncludeDirs["GSL"] = "vendors/gsl"
+IncludeDirs["TOL"] = "vendors/tiny_obj_loader"
+IncludeDirs["JSON"] = "vendors/json"
 
 include "vendors/"
 
@@ -19,7 +25,7 @@ project "LearnVulkan"
   location "%{wks.location}/%{prj.name}"
   kind "ConsoleApp"
   language "C++"
-  cppdialect "C++17"
+  cppdialect "C++20"
   targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
   objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
 
@@ -28,16 +34,21 @@ project "LearnVulkan"
   includedirs {
 		"src",
 		"%{IncludeDirs.GLFW}/include",
-		"vendors/glm",
-		-- "vendors/stb_image"
+		"%{IncludeDirs.FMT}/include",
+		"%{IncludeDirs.GLM}",
+		"%{IncludeDirs.STB}",
+    "%{IncludeDirs.GSL}/include",
+		"%{IncludeDirs.TOL}",
+    "%{IncludeDirs.JSON}/include",
 	}
 
   links {
 		"GLFW",
+    "FMT",
 	}
   
 	filter "system:windows"
-    cppdialect "c++17"
+    cppdialect "c++20"
     staticruntime "On"
     systemversion "latest"
     links
