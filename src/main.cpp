@@ -931,8 +931,8 @@ class Application
     {
         // Shader modules
 
-        const auto vert_shader_code = read_bytes("C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\shaders\\vert.spv");
-        const auto frag_shader_code = read_bytes("C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\shaders\\frag.spv");
+        const auto vert_shader_code = read_bytes("C:\\BrighT\\Dev\\LearnVulkan\\resource\\shaders\\vert.spv");
+        const auto frag_shader_code = read_bytes("C:\\BrighT\\Dev\\LearnVulkan\\resource\\shaders\\frag.spv");
         const VkShaderModule vert_shader_module =
             create_shader_module(device_, vert_shader_code);
         const VkShaderModule frag_shader_module =
@@ -1177,7 +1177,7 @@ class Application
         // auto meshes = create_cube();
         // auto meshes = create_grass_block();
         const auto meshes =
-            load_mesh("C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets\\lighthouse.obj", "C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets",
+            load_mesh("C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets\\lighthouse.obj", "C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets",
                       glm::scale(glm::translate(glm::mat4(1.0f),
                                                 vec3(0.0f, -0.95f, 0.0f)),
                                  vec3(0.009f, 0.009f, 0.009f)));
@@ -2519,7 +2519,7 @@ class Application
         return {{
             vertices,
             indices,
-            "C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets\\moonquest.png",
+            "C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets\\moonquest.png",
         }};
     }
 
@@ -2589,7 +2589,7 @@ class Application
         return {{
             vertices,
             indices,
-            "C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets\\moonquest.png",
+            "C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets\\moonquest.png",
         }};
     }
 
@@ -2674,7 +2674,7 @@ class Application
         return {{
             vertices,
             indices,
-            "C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets\\grass.png",
+            "C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets\\grass.png",
         }};
     }
 
@@ -2813,7 +2813,7 @@ class Application
 
             // TODO: Support per-face material instead of per-shape
             std::string texture_basename = fmt::format(
-                "C:\\BrighT\\Dev\\LearnVulkan\\build\\bin\\Debug-windows-x86_64\\LearnVulkan\\assets\\{}_baseColor",
+                "C:\\BrighT\\Dev\\LearnVulkan\\resource\\assets\\{}_baseColor",
                 materials[shapes[shape_index].mesh.material_ids[0]].name);
             std::string texture_name = {};
 

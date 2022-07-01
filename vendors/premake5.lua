@@ -7,8 +7,8 @@ project "GLFW"
 	kind "StaticLib"
 	language "C"
   location "%{wks.location}/%{prj.name}"
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
 
 	files {
 		rootFolder["GLFW"] .. "/include/GLFW/glfw3.h",
@@ -98,8 +98,8 @@ project "fmt"
   kind "StaticLib"
   language "C++"
   location "%{wks.location}/%{prj.name}"
-  targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-  objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
+  targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
 
   files {
     rootFolder["FMT"] .. "/include/core.h",

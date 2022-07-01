@@ -26,8 +26,8 @@ project "LearnVulkan"
   kind "ConsoleApp"
   language "C++"
   cppdialect "C++20"
-  targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-  objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
+  targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
 
   files { "src/**.h", "src/**.cpp" }
 
