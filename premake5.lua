@@ -15,9 +15,7 @@ IncludeDirs["GLFW"] = "vendors/glfw"
 IncludeDirs["FMT"] = "vendors/fmt"
 IncludeDirs["GLM"] = "vendors/glm"
 IncludeDirs["STB"] = "vendors/stb"
-IncludeDirs["GSL"] = "vendors/gsl"
 IncludeDirs["TOL"] = "vendors/tiny_obj_loader"
-IncludeDirs["JSON"] = "vendors/json"
 
 include "vendors/"
 
@@ -37,9 +35,7 @@ project "LearnVulkan"
 		"%{IncludeDirs.FMT}/include",
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.STB}",
-    "%{IncludeDirs.GSL}/include",
 		"%{IncludeDirs.TOL}",
-    "%{IncludeDirs.JSON}/include",
 	}
 
   links {
