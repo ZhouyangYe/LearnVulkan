@@ -38,27 +38,25 @@ namespace LearnVulkan {
 			WindowData() {};
 		};
 
-		const uint32_t& Width();
-		const uint32_t& Height();
-		const std::string& Title();
-		const bool& FrameBufferResized();
-		const bool& ShouldWindowClose();
-		const WindowSize FrameBufferSize();
+		const std::string& getTitle();
+		const bool& isFrameBufferResized();
+		const bool& shouldWindowBeClosed();
+		const WindowSize getWindowSize();
+		const WindowSize getFrameBufferSize();
 
 		void setEventCallback(const std::function<void(Event& e)>& fn);
 
-		void Init();
+		void Init(WindowProps& props);
+		void Destroy();
 		void Begin();
 		void End();
 
-		Window(WindowProps props) : title(props.title), width(props.width), height(props.height);
+		Window();
 		~Window();
 	private:
-		uint32_t width;
-		uint32_t height;
 		std::string title;
 		GLFWwindow* m_window;
 		WindowData m_window_data;
-		bool shouldWindowClose = false;
+		bool shouldWindowClose;
 	};
 }

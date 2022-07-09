@@ -4,8 +4,7 @@
 namespace LearnVulkan {
 	class AppState {
 	public:
-		static Window* window;
-		static void initWindow(Window::WindowProps& props);
+		static Window window;
 		static void Destroy();
 	private:
 	};

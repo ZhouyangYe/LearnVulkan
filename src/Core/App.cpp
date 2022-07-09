@@ -3,9 +3,9 @@
 namespace LearnVulkan {
 	App::App() {
 		Window::WindowProps props;
-		AppState::initWindow(props);
+		AppState::window.Init(props);
 
-		AppState::window->setEventCallback([](Event& event)
+		AppState::window.setEventCallback([](Event& event)
 			{
 				switch (event.type)
 				{
@@ -29,12 +29,12 @@ namespace LearnVulkan {
 	}
 
 	void App::Run() {
-		while (AppState::window->ShouldWindowClose()) {
-			AppState::window->Begin();
+		while (!AppState::window.shouldWindowBeClosed()) {
+			AppState::window.Begin();
 
 
 
-			AppState::window->End();
+			AppState::window.End();
 		}
 	}
 }

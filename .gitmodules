@@ -10,3 +10,6 @@
 [submodule "vendors/fmt"]
 	path = vendors/fmt
 	url = git@github.com:fmtlib/fmt.git
+[submodule "vendors/vk-bootstrap"]
+	path = vendors/vk-bootstrap
+	url = git@github.com:ZhouyangYe/vk-bootstrap.git

@@ -1,50 +1,47 @@
 #include "Window.h"
 
 namespace LearnVulkan {
-	const uint32_t& Window::Width() {
-		return width;
-	}
-
-	const uint32_t& Window::Height() {
-		return height;
-	}
-
-	const std::string& Window::Title() {
+	const std::string& Window::getTitle() {
 		return title;
 	}
 
-    const bool& Window::FrameBufferResized() {
+    const bool& Window::isFrameBufferResized() {
         return m_window_data.framebufferResized;
     }
 
-    const bool& Window::ShouldWindowClose() {
+    const bool& Window::shouldWindowBeClosed() {
         return shouldWindowClose || glfwWindowShouldClose(m_window);
     }
 
-    const Window::WindowSize Window::FrameBufferSize() {
+    const Window::WindowSize Window::getWindowSize() {
         int width, height;
-        glfwGetFramebufferSize(m_window, &width, &height);
-        return { width, height };
+        glfwGetWindowSize(m_window, &width, &height);
+        return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
     }
 
-    void Window::setEventCallback(const std::function<void(Event& e)>& fn)
-    {
+    const Window::WindowSize Window::getFrameBufferSize() {
+        int width, height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+    }
+
+    void Window::setEventCallback(const std::function<void(Event& e)>& fn) {
         if (!fn) return;
         m_window_data.eventHandler = fn;
     }
 
-	Window::Window(WindowProps props) {}
-    Window::~Window() {
-        glfwDestroyWindow(m_window);
-        glfwTerminate();
-    }
+	Window::Window() : title("Untitled"), m_window(nullptr), shouldWindowClose(false) {}
 
-	void Window::Init() {
-		glfwInit();
+    Window::~Window() {}
 
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    void Window::Init(WindowProps& props) {
+        title = props.title;
 
-        m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        glfwInit();
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+        m_window = glfwCreateWindow(props.width, props.height, title.c_str(), NULL, NULL);
         if (m_window == NULL) {
             return;
         }
@@ -135,7 +132,12 @@ namespace LearnVulkan {
                 WindowData& windowData = *(WindowData*)glfwGetWindowUserPointer(window);
                 windowData.framebufferResized = true;
             });
-	}
+    }
+
+    void Window::Destroy() {
+        glfwDestroyWindow(m_window);
+        glfwTerminate();
+    }
 
     void Window::Begin() {
         // Poll and handle events (inputs, window resize, etc.)

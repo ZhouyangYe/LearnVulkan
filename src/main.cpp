@@ -1,7 +1,8 @@
 #include "Core/App.h"
 
-int main() {
+int main(int argc, char* argv[]) {
     LearnVulkan::App app;
+
     try {
         app.Run();
     }
