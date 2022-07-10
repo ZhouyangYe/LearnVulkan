@@ -10,12 +10,13 @@ workspace "LearnVulkan"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-IncludeDirs = {}
-IncludeDirs["GLFW"] = "vendors/glfw"
-IncludeDirs["FMT"] = "vendors/fmt"
-IncludeDirs["GLM"] = "vendors/glm"
-IncludeDirs["STB"] = "vendors/stb"
-IncludeDirs["TOL"] = "vendors/tiny_obj_loader"
+VendorDirs = {}
+VendorDirs["GLFW"] = "vendors/glfw"
+VendorDirs["FMT"] = "vendors/fmt"
+VendorDirs["GLM"] = "vendors/glm"
+VendorDirs["STB"] = "vendors/stb"
+VendorDirs["TOL"] = "vendors/tiny_obj_loader"
+VendorDirs["VKB"] = "vendors/vk-bootstrap"
 
 include "vendors/"
 
@@ -27,15 +28,21 @@ project "LearnVulkan"
   targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
   objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
 
-  files { "src/**.h", "src/**.cpp" }
+  files { 
+    "src/**.h",
+    "src/**.cpp",
+    "%{VendorDirs.VKB}/src/VkBootstrap.h",
+    "%{VendorDirs.VKB}/src/VkBootstrap.cpp",
+  }
 
   includedirs {
 		"src",
-		"%{IncludeDirs.GLFW}/include",
-		"%{IncludeDirs.FMT}/include",
-		"%{IncludeDirs.GLM}",
-		"%{IncludeDirs.STB}",
-		"%{IncludeDirs.TOL}",
+		"%{VendorDirs.GLFW}/include",
+		"%{VendorDirs.FMT}/include",
+		"%{VendorDirs.GLM}",
+		"%{VendorDirs.STB}",
+		"%{VendorDirs.TOL}",
+		"%{VendorDirs.VKB}/src",
 	}
 
   links {

@@ -128,36 +128,3 @@ project "fmt"
   filter "configurations:Release"
     runtime "Release"
     optimize "on"
-
---vk-bootstrap
-project "vk-bootstrap"
-kind "StaticLib"
-language "C++"
-location "%{wks.location}/%{prj.name}"
-targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
-objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
-
-files {
-  rootFolder["VKB"] .. "/src/VkBootstrap.h",
-  rootFolder["VKB"] .. "/src/VkBootstrap.cpp",
-}
-
-includedirs {
-  rootFolder["VKB"] .. "/src"
-}
-
-filter "system:windows"
-  systemversion "latest"
-  staticruntime "On"
-
-  defines {
-    "_CRT_SECURE_NO_WARNINGS"
-  }
-
-filter "configurations:Debug"
-  runtime "Debug"
-  symbols "on"
-
-filter "configurations:Release"
-  runtime "Release"
-  optimize "on"

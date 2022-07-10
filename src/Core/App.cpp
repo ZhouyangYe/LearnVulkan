@@ -2,8 +2,7 @@
 
 namespace LearnVulkan {
 	App::App() {
-		Window::WindowProps props;
-		AppState::window.Init(props);
+		AppState::Init();
 
 		AppState::window.setEventCallback([](Event& event)
 			{
@@ -30,9 +29,13 @@ namespace LearnVulkan {
 
 	void App::Run() {
 		while (!AppState::window.shouldWindowBeClosed()) {
+			if (AppState::window.isMinimized()) {
+				return;
+			}
+
 			AppState::window.Begin();
 
-
+			AppState::renderer.Draw();
 
 			AppState::window.End();
 		}

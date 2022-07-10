@@ -13,6 +13,14 @@ namespace LearnVulkan {
         return shouldWindowClose || glfwWindowShouldClose(m_window);
     }
 
+    bool Window::isMinimized() {
+        return glfwGetWindowAttrib(m_window, GLFW_ICONIFIED) != 0;
+    }
+
+    void Window::getSurface(VkInstance& instance, VkSurfaceKHR& surface) {
+        glfwCreateWindowSurface(instance, m_window, nullptr, &surface);
+    }
+
     const Window::WindowSize Window::getWindowSize() {
         int width, height;
         glfwGetWindowSize(m_window, &width, &height);

@@ -25,7 +25,8 @@ namespace LearnVulkan {
 			}
 		};
 
-		struct WindowSize {
+		struct WindowSize
+		{
 			uint32_t width;
 			uint32_t height;
 			WindowSize(uint32_t width, uint32_t height) : width(width), height(height) {}
@@ -38,11 +39,13 @@ namespace LearnVulkan {
 			WindowData() {};
 		};
 
+		bool isMinimized();
 		const std::string& getTitle();
 		const bool& isFrameBufferResized();
 		const bool& shouldWindowBeClosed();
 		const WindowSize getWindowSize();
 		const WindowSize getFrameBufferSize();
+		void getSurface(VkInstance& instance, VkSurfaceKHR& surface);
 
 		void setEventCallback(const std::function<void(Event& e)>& fn);
 
