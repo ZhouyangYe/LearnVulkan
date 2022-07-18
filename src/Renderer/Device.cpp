@@ -9,9 +9,6 @@ namespace LearnVulkan {
 
 	void Device::Destroy()
 	{
-		// make sure the gpu has stopped doing its things
-		vkDeviceWaitIdle(_device);
-
 		vkDestroySurfaceKHR(_instance, _surface, nullptr);
 
 		vkDestroyDevice(_device, nullptr);

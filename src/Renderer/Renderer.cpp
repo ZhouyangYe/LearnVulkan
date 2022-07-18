@@ -29,6 +29,9 @@ namespace LearnVulkan {
 	void Renderer::Destroy()
 	{
 		if (_isInitialized) {
+			// make sure the gpu has stopped doing its things
+			vkDeviceWaitIdle(device._device);
+
 			// destroy command buffers
 			commandBuffer.Destroy();
 
