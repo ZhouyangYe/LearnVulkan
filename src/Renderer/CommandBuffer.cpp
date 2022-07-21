@@ -27,8 +27,10 @@ namespace LearnVulkan {
 		VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &_mainCommandBuffer));
 	}
 
-	void CommandBuffer::init_renderpass(VkFormat& swapchainImageFormat)
+	void CommandBuffer::init_renderpass(float clearColor[4], VkFormat& swapchainImageFormat)
 	{
+		this->clearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
+
 		//we define an attachment description for our main color image
 		//the attachment is loaded as "clear" when renderpass start
 		//the attachment is stored when renderpass ends
@@ -100,8 +102,7 @@ namespace LearnVulkan {
 
 		//make a clear-color from frame number. This will flash with a 120 frame period.
 		VkClearValue clearValue;
-		float flash = abs(sin(_frameNumber / 120.f));
-		clearValue.color = { { 0.0f, 0.0f, flash, 1.0f } };
+		clearValue.color = clearColor;
 
 		//start the main renderpass. 
 		//We will use the clear color from above, and the framebuffer of the index the swapchain gave us
@@ -118,7 +119,5 @@ namespace LearnVulkan {
 	{
 		//finalize the render pass
 		vkCmdEndRenderPass(_mainCommandBuffer);
-
-		_frameNumber++;
 	}
 }

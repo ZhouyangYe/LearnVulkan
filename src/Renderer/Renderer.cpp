@@ -8,9 +8,9 @@ namespace LearnVulkan {
 
 	Renderer::~Renderer() {}
 
-	void Renderer::Init(Window& window)
+	void Renderer::Init(RendererProps& props)
 	{
-		device.init_vulkan(window);
+		device.init_vulkan(props.window);
 
 		sync.init_sync_structures();
 
@@ -18,7 +18,7 @@ namespace LearnVulkan {
 
 		commandBuffer.init_commands();
 
-		commandBuffer.init_renderpass(swapChain._swapchainImageFormat);
+		commandBuffer.init_renderpass(props.clearColor, swapChain._swapchainImageFormat);
 
 		swapChain.init_framebuffers(commandBuffer._renderPass);
 

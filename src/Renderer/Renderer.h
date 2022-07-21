@@ -8,6 +8,16 @@
 namespace LearnVulkan {
 	class Renderer {
 	public:
+		struct RendererProps
+		{
+			Window* window;
+			float clearColor[4]{ 0.0f, 0.0f, 0.0f, 0.0f };
+
+			RendererProps(Window* window, float color[4])
+				: window(window), clearColor{ color[0], color[1], color[2], color[3] }
+			{}
+		};
+
 		bool _isInitialized{ false };
 
 		Device device;
@@ -19,7 +29,7 @@ namespace LearnVulkan {
 		~Renderer();
 
 		// initializes everything in the engine
-		void Init(Window& window);
+		void Init(RendererProps& props);
 		// shuts down the engine
 		void Destroy();
 		// draw loop

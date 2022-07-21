@@ -18,7 +18,7 @@ namespace LearnVulkan {
 
 		void Destroy();
 
-		void init_vulkan(Window& window);
+		void init_vulkan(Window* window);
 
 		void submit(VkSubmitInfo& submitInfo, VkFence& renderFence);
 		void present(VkPresentInfoKHR& presentInfo);

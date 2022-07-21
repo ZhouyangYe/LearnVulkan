@@ -14,7 +14,7 @@ namespace LearnVulkan {
 		void Destroy();
 
 		void init_commands();
-		void init_renderpass(VkFormat& swapchainImageFormat);
+		void init_renderpass(float clearColor[4], VkFormat& swapchainImageFormat);
 		
 		void begin_command();
 		void end_command();
@@ -22,8 +22,7 @@ namespace LearnVulkan {
 		void end_renderPass();
 	private:
 		Device* device;
-
-		float _frameNumber{ 0.0f };
+		VkClearColorValue clearColor;
 
 		VkCommandPool _commandPool;
 	};

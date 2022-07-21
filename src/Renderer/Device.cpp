@@ -16,11 +16,11 @@ namespace LearnVulkan {
 		vkDestroyInstance(_instance, nullptr);
 	}
 
-	void Device::init_vulkan(Window& w)
+	void Device::init_vulkan(Window* w)
 	{
-		window = &w;
+		window = w;
 
-		auto size = w.getWindowSize();
+		auto size = w->getWindowSize();
 		_windowExtent = { size.width, size.height };
 
 		vkb::InstanceBuilder builder;
@@ -38,7 +38,7 @@ namespace LearnVulkan {
 		_instance = vkb_inst.instance;
 		_debug_messenger = vkb_inst.debug_messenger;
 
-		w.getSurface(_instance, _surface);
+		w->getSurface(_instance, _surface);
 
 		// use vkbootstrap to select a gpu. 
 		// We want a gpu that can write to the SDL surface and supports vulkan 1.2
