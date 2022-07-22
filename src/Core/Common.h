@@ -19,5 +19,6 @@
 #include <chrono>
 #include <mutex>
 #include <unordered_map>
+#include <deque>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>

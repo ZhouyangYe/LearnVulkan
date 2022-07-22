@@ -7,6 +7,7 @@ namespace LearnVulkan {
 	public:
 		static Window window;
 		static Renderer renderer;
+		static Pipeline pipeline;
 		static void Init();
 		static void Destroy();
 	private:

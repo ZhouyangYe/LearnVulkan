@@ -95,7 +95,7 @@ namespace LearnVulkan {
 		VK_CHECK(vkEndCommandBuffer(_mainCommandBuffer));
 	}
 
-	void CommandBuffer::begin_renderPass(VkSwapchainKHR& swapChain, VkSemaphore& presentSemaphore, uint32_t& swapchainImageIndex, VkExtent2D& _windowExtent, std::vector<VkFramebuffer>& _framebuffers)
+	void CommandBuffer::begin_renderPass(VkSwapchainKHR& swapChain, VkSemaphore& presentSemaphore, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers)
 	{
 		//request image from the swapchain
 		VK_CHECK(vkAcquireNextImageKHR(device->_device, swapChain, 1000000000, presentSemaphore, nullptr, &swapchainImageIndex));
@@ -106,7 +106,7 @@ namespace LearnVulkan {
 
 		//start the main renderpass. 
 		//We will use the clear color from above, and the framebuffer of the index the swapchain gave us
-		VkRenderPassBeginInfo rpInfo = vkinit::renderpass_begin_info(_renderPass, _windowExtent, _framebuffers[swapchainImageIndex]);
+		VkRenderPassBeginInfo rpInfo = vkinit::renderpass_begin_info(_renderPass, device->_windowExtent, _framebuffers[swapchainImageIndex]);
 
 		//connect clear values
 		rpInfo.clearValueCount = 1;

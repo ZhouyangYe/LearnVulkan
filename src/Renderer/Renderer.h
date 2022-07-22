@@ -4,6 +4,7 @@
 #include "CommandBuffer.h"
 #include "SwapChain.h"
 #include "Synchronization.h"
+#include "Pipeline.h"
 
 namespace LearnVulkan {
 	class Renderer {
@@ -30,10 +31,14 @@ namespace LearnVulkan {
 
 		// initializes everything in the engine
 		void Init(RendererProps& props);
+		// wait for gpu to finish its work
+		void Wait();
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw();
+		void Draw(Pipeline& pipeline);
+
+		void initPipeline(Pipeline& pipeline);
 	private:
 	};
 }

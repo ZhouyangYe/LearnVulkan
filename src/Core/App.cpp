@@ -35,7 +35,7 @@ namespace LearnVulkan {
 
 			AppState::window.Begin();
 
-			AppState::renderer.Draw();
+			AppState::renderer.Draw(AppState::pipeline);
 
 			AppState::window.End();
 		}

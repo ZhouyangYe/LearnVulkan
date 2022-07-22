@@ -1,12 +1,16 @@
 #include "Renderer.h"
 
 namespace LearnVulkan {
-
 	Renderer::Renderer()
 		: commandBuffer(&device), swapChain(&device), sync(&device)
 	{}
 
 	Renderer::~Renderer() {}
+
+	void Renderer::initPipeline(Pipeline& pipeline)
+	{
+		pipeline.init_pipeline(&device, &commandBuffer._renderPass);
+	}
 
 	void Renderer::Init(RendererProps& props)
 	{
@@ -26,12 +30,17 @@ namespace LearnVulkan {
 		_isInitialized = true;
 	}
 
-	void Renderer::Destroy()
+	void Renderer::Wait()
 	{
 		if (_isInitialized) {
 			// make sure the gpu has stopped doing its things
 			vkDeviceWaitIdle(device._device);
+		}
+	}
 
+	void Renderer::Destroy()
+	{
+		if (_isInitialized) {
 			// destroy command buffers
 			commandBuffer.Destroy();
 
@@ -46,15 +55,17 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw()
+	void Renderer::Draw(Pipeline& pipeline)
 	{
 		sync.sync_gpu();
 
 		commandBuffer.begin_command();
 
-		commandBuffer.begin_renderPass(swapChain._swapchain, sync._presentSemaphore, swapChain.swapchainImageIndex, device._windowExtent, swapChain._framebuffers);
+		commandBuffer.begin_renderPass(swapChain._swapchain, sync._presentSemaphore, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
-		// once we start adding rendering commands, they will go here
+		// rendering commands
+		pipeline.bind(commandBuffer._mainCommandBuffer);
+		pipeline.render(commandBuffer._mainCommandBuffer);
 
 		commandBuffer.end_renderPass();
 
