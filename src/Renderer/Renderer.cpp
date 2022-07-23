@@ -61,11 +61,13 @@ namespace LearnVulkan {
 
 		commandBuffer.begin_command();
 
-		commandBuffer.begin_renderPass(swapChain._swapchain, sync._presentSemaphore, swapChain.swapchainImageIndex, swapChain._framebuffers);
+		swapChain.request_imgIndex(sync._presentSemaphore);
+		commandBuffer.begin_renderPass(swapChain._swapchain, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
 		// rendering commands
 		pipeline.bind(commandBuffer._mainCommandBuffer);
-		//bind the mesh vertex buffer with offset 0
+
+		// bind the mesh vertex buffer with offset 0
 		VkDeviceSize offset = 0;
 		vkCmdBindVertexBuffers(commandBuffer._mainCommandBuffer, 0, 1, &vBuffer._buffer, &offset);
 

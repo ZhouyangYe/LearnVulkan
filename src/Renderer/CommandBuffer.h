@@ -19,7 +19,7 @@ namespace LearnVulkan {
 		
 		void begin_command();
 		void end_command();
-		void begin_renderPass(VkSwapchainKHR& swapChain, VkSemaphore& presentSemaphore, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers);
+		void begin_renderPass(VkSwapchainKHR& swapChain, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers);
 		void end_renderPass();
 	private:
 		Device* device;

@@ -52,4 +52,10 @@ namespace LearnVulkan {
 			VK_CHECK(vkCreateFramebuffer(device->_device, &fb_info, nullptr, &_framebuffers[i]));
 		}
 	}
+
+	void SwapChain::request_imgIndex(VkSemaphore& semaphore)
+	{
+		//request image from the swapchain
+		VK_CHECK(vkAcquireNextImageKHR(device->_device, _swapchain, 1000000000, semaphore, nullptr, &swapchainImageIndex));
+	}
 }

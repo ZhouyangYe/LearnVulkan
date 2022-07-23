@@ -95,11 +95,8 @@ namespace LearnVulkan {
 		VK_CHECK(vkEndCommandBuffer(_mainCommandBuffer));
 	}
 
-	void CommandBuffer::begin_renderPass(VkSwapchainKHR& swapChain, VkSemaphore& presentSemaphore, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers)
+	void CommandBuffer::begin_renderPass(VkSwapchainKHR& swapChain, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers)
 	{
-		//request image from the swapchain
-		VK_CHECK(vkAcquireNextImageKHR(device->_device, swapChain, 1000000000, presentSemaphore, nullptr, &swapchainImageIndex));
-
 		//make a clear-color from frame number. This will flash with a 120 frame period.
 		VkClearValue clearValue;
 		clearValue.color = clearColor;

@@ -43,6 +43,7 @@ namespace LearnVulkan {
 	void AppState::Destroy() {
 		window.Destroy();
 		renderer.Wait();
+		renderer.device.destroy_buffer(triangleBuffer);
 		pipeline.Destroy();
 		renderer.Destroy();
 	}

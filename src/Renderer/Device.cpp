@@ -12,6 +12,8 @@ namespace LearnVulkan {
 
 	void Device::Destroy()
 	{
+		vmaDestroyAllocator(_allocator);
+
 		vkDestroySurfaceKHR(_instance, _surface, nullptr);
 
 		vkDestroyDevice(_device, nullptr);
