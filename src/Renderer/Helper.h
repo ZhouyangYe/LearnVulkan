@@ -1,5 +1,6 @@
 #pragma once
 #include "VK_HEADER.h"
+#include "VertexLayout.h"
 
 namespace LearnVulkan {
 	namespace vkinit {
@@ -23,7 +24,7 @@ namespace LearnVulkan {
 
 		VkPipelineShaderStageCreateInfo pipeline_shader_stage_create_info(VkShaderStageFlagBits stage, VkShaderModule shaderModule);
 
-		VkPipelineVertexInputStateCreateInfo vertex_input_state_create_info();
+		VkPipelineVertexInputStateCreateInfo vertex_input_state_create_info(VertexLayout& layout);
 
 		VkPipelineInputAssemblyStateCreateInfo input_assembly_create_info(VkPrimitiveTopology topology);
 
@@ -34,5 +35,32 @@ namespace LearnVulkan {
 		VkPipelineColorBlendAttachmentState color_blend_attachment_state();
 
 		VkPipelineLayoutCreateInfo pipeline_layout_create_info();
+
+		VkImageCreateInfo image_create_info(VkFormat format, VkImageUsageFlags usageFlags, VkExtent3D extent);
+
+		VkImageViewCreateInfo imageview_create_info(VkFormat format, VkImage image, VkImageAspectFlags aspectFlags);
+
+		VkPipelineDepthStencilStateCreateInfo depth_stencil_create_info(bool bDepthTest, bool bDepthWrite, VkCompareOp compareOp);
+	}
+
+	namespace cleanup {
+		// TODO: cleanup system
+		struct DeletionQueue
+		{
+			std::deque<std::function<void()>> deletors;
+
+			void push_function(std::function<void()>&& function) {
+				deletors.push_back(function);
+			}
+
+			void flush() {
+				// reverse iterate the deletion queue to execute all the functions
+				for (auto it = deletors.rbegin(); it != deletors.rend(); it++) {
+					(*it)(); //call the function
+				}
+
+				deletors.clear();
+			}
+		};
 	}
 }

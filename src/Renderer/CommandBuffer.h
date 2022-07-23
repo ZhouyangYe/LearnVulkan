@@ -1,6 +1,7 @@
 #pragma once
 #include "VK_HEADER.h"
 #include "Device.h"
+#include "Helper.h"
 
 namespace LearnVulkan {
 	class CommandBuffer {

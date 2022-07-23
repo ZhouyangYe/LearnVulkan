@@ -7,9 +7,9 @@ namespace LearnVulkan {
 
 	Renderer::~Renderer() {}
 
-	void Renderer::initPipeline(Pipeline& pipeline)
+	void Renderer::initPipeline(Pipeline& pipeline, VertexLayout& layout)
 	{
-		pipeline.init_pipeline(&device, &commandBuffer._renderPass);
+		pipeline.init_pipeline(&device, &commandBuffer._renderPass, layout);
 	}
 
 	void Renderer::Init(RendererProps& props)
@@ -55,7 +55,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(Pipeline& pipeline)
+	void Renderer::Draw(Pipeline& pipeline, VertexBuffer& vBuffer)
 	{
 		sync.sync_gpu();
 
@@ -65,7 +65,12 @@ namespace LearnVulkan {
 
 		// rendering commands
 		pipeline.bind(commandBuffer._mainCommandBuffer);
-		pipeline.render(commandBuffer._mainCommandBuffer);
+		//bind the mesh vertex buffer with offset 0
+		VkDeviceSize offset = 0;
+		vkCmdBindVertexBuffers(commandBuffer._mainCommandBuffer, 0, 1, &vBuffer._buffer, &offset);
+
+		// draw
+		vkCmdDraw(commandBuffer._mainCommandBuffer, vBuffer.vertice_num, 1, 0, 0);
 
 		commandBuffer.end_renderPass();
 

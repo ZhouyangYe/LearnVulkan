@@ -1,6 +1,8 @@
 #pragma once
 #include "VK_HEADER.h"
 #include "Device.h"
+#include "VertexLayout.h"
+#include "Helper.h"
 
 namespace LearnVulkan {
 	class PipelineBuilder {
@@ -21,9 +23,9 @@ namespace LearnVulkan {
 	class Pipeline {
 	public:
 		struct ShaderError {
-			const char* desc;
+			std::string desc;
 
-			ShaderError(const char* desc) : desc(desc) {}
+			ShaderError(std::string desc) : desc(desc) {}
 		};
 
 		std::vector<VkPipeline> pipelines;
@@ -32,10 +34,9 @@ namespace LearnVulkan {
 		~Pipeline();
 
 		void bind(VkCommandBuffer& cmd);
-		void render(VkCommandBuffer& cmd);
 
 		VkShaderModule load_shader_module(const char* filePath);
-		void init_pipeline(Device* device, VkRenderPass* renderPass);
+		void init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout);
 		void Destroy();
 		void add_pipeline(const char* vertexShaderPath, const char* fragmentShaderPath);
 		VkPipeline& getSelectedPipeline();

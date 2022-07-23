@@ -17,6 +17,7 @@ VendorDirs["GLM"] = "vendors/glm"
 VendorDirs["STB"] = "vendors/stb"
 VendorDirs["TOL"] = "vendors/tiny_obj_loader"
 VendorDirs["VKB"] = "vendors/vk-bootstrap"
+VendorDirs["VMA"] = "vendors/VulkanMemoryAllocator"
 
 include "vendors/"
 
@@ -43,6 +44,7 @@ project "LearnVulkan"
 		"%{VendorDirs.STB}",
 		"%{VendorDirs.TOL}",
 		"%{VendorDirs.VKB}/src",
+		"%{VendorDirs.VMA}/include",
 	}
 
   links {

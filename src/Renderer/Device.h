@@ -4,6 +4,7 @@
 namespace LearnVulkan {
 	class Device {
 	public:
+		VmaAllocator _allocator; //vma lib allocator
 		VkDevice _device;
 		uint32_t _graphicsQueueFamily;
 		VkPhysicalDevice _chosenGPU;
@@ -19,6 +20,9 @@ namespace LearnVulkan {
 		void Destroy();
 
 		void init_vulkan(Window* window);
+
+		void upload_mesh(const void* vertices, uint64_t size, uint32_t num, VertexBuffer& vBuffer);
+		void destroy_buffer(VertexBuffer& vBuffer);
 
 		void submit(VkSubmitInfo& submitInfo, VkFence& renderFence);
 		void present(VkPresentInfoKHR& presentInfo);

@@ -1,5 +1,8 @@
 #include "Device.h"
 
+#define VMA_IMPLEMENTATION
+#include "vk_mem_alloc.h"
+
 namespace LearnVulkan {
 	constexpr bool bUseValidationLayers = true;
 
@@ -63,6 +66,50 @@ namespace LearnVulkan {
 		_graphicsQueue = vkbDevice.get_queue(vkb::QueueType::graphics).value();
 
 		_graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
+
+		//initialize the memory allocator
+		VmaAllocatorCreateInfo allocatorInfo = {};
+		allocatorInfo.physicalDevice = _chosenGPU;
+		allocatorInfo.device = _device;
+		allocatorInfo.instance = _instance;
+		vmaCreateAllocator(&allocatorInfo, &_allocator);
+	}
+
+	void Device::upload_mesh(const void* vertices, uint64_t size, uint32_t num, VertexBuffer& vBuffer)
+	{
+		vBuffer.vertice_num = num;
+
+		//allocate vertex buffer
+		VkBufferCreateInfo bufferInfo = {};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		//this is the total size, in bytes, of the buffer we are allocating
+		bufferInfo.size = size;
+		//this buffer is going to be used as a Vertex Buffer
+		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+
+		//let the VMA library know that this data should be writeable by CPU, but also readable by GPU
+		VmaAllocationCreateInfo vmaallocInfo = {};
+		vmaallocInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+
+		//allocate the buffer
+		VK_CHECK(vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo,
+			&vBuffer._buffer,
+			&vBuffer._allocation,
+			nullptr));
+
+		//copy vertex data
+		void* data;
+		vmaMapMemory(_allocator, vBuffer._allocation, &data);
+
+		memcpy(data, vertices, size);
+
+		vmaUnmapMemory(_allocator, vBuffer._allocation);
+	}
+
+	void Device::destroy_buffer(VertexBuffer& vBuffer)
+	{
+		vmaDestroyBuffer(_allocator, vBuffer._buffer, vBuffer._allocation);
 	}
 
 	void Device::submit(VkSubmitInfo& submitInfo, VkFence& renderFence)

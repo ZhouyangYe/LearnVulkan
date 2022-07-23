@@ -20,5 +20,6 @@
 #include <mutex>
 #include <unordered_map>
 #include <deque>
+#include <fmt/core.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>

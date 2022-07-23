@@ -67,8 +67,7 @@ namespace LearnVulkan {
 		std::ifstream file(filePath, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open()) {
-			char message[] = "Failed to open file: ";
-			throw ShaderError(std::strcat(message, filePath));
+			throw ShaderError(fmt::format("Failed to open file: ", filePath));
 		}
 
 		// find what the size of the file is by looking up the location of the cursor
@@ -99,14 +98,13 @@ namespace LearnVulkan {
 		// check that the creation goes well.
 		VkShaderModule shaderModule;
 		if (vkCreateShaderModule(device->_device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-			char message[] = "Failed to create shader module: ";
-			throw ShaderError(std::strcat(message, filePath));
+			throw ShaderError(fmt::format("Failed to create shader module: ", filePath));
 		}
 
 		return shaderModule;
 	}
 
-	void Pipeline::init_pipeline(Device* device, VkRenderPass* renderPass)
+	void Pipeline::init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout)
 	{
 		this->device = device;
 		_renderPass = renderPass;
@@ -118,7 +116,7 @@ namespace LearnVulkan {
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
 		// vertex input controls how to read vertices from vertex buffers. We arent using it yet
-		pipelineBuilder._vertexInputInfo = vkinit::vertex_input_state_create_info();
+		pipelineBuilder._vertexInputInfo = vkinit::vertex_input_state_create_info(layout);
 
 		// input assembly is the configuration for drawing triangle lists, strips, or individual points.
 		// we are just going to draw triangle list
@@ -197,11 +195,6 @@ namespace LearnVulkan {
 	void Pipeline::bind(VkCommandBuffer& cmd)
 	{
 		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[selectedPipelineIndex]);
-	}
-
-	void Pipeline::render(VkCommandBuffer& cmd)
-	{
-		vkCmdDraw(cmd, 3, 1, 0, 0);
 	}
 
 	const int& Pipeline::getSelectedPipelineIndex()

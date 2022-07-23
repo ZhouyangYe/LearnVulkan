@@ -5,6 +5,7 @@
 #include "SwapChain.h"
 #include "Synchronization.h"
 #include "Pipeline.h"
+#include "VertexLayout.h"
 
 namespace LearnVulkan {
 	class Renderer {
@@ -36,9 +37,9 @@ namespace LearnVulkan {
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw(Pipeline& pipeline);
+		void Draw(Pipeline& pipeline, VertexBuffer& vBuffer);
 
-		void initPipeline(Pipeline& pipeline);
+		void initPipeline(Pipeline& pipeline, VertexLayout& layout);
 	private:
 	};
 }
