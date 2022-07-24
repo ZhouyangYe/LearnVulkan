@@ -49,7 +49,7 @@ namespace LearnVulkan {
 
 			//calculate final mesh matrix
 			glm::mat4 mesh_matrix = projection * view * model;
-			AppState::pushConstantData.render_matrix = mesh_matrix;
+			AppState::PosColorNormalVertex::pushConstantData.render_matrix = mesh_matrix;
 
 
 			AppState::renderer.Draw(AppState::triangleBuffer);

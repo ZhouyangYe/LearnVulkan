@@ -5,7 +5,7 @@ namespace LearnVulkan {
 	Renderer AppState::renderer;
 	Pipeline AppState::pipeline;
 	VertexBuffer AppState::triangleBuffer;
-	AppState::MeshPushConstants AppState::pushConstantData;
+	AppState::PosColorNormalVertex::MeshPushConstants AppState::PosColorNormalVertex::pushConstantData;
 
 	VertexLayout AppState::PosColorNormalVertex::layout;
 
@@ -15,7 +15,7 @@ namespace LearnVulkan {
 		window.Init(props);
 
 		// initialize renderer
-		float clearColor[4] = { 1.0f, 0.3f, 0.6f, 1.0f };
+		float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		Renderer::RendererProps renderProps(&window, clearColor);
 		renderer.Init(renderProps);
 

@@ -5,17 +5,19 @@
 namespace LearnVulkan {
 	class AppState {
 	public:
-		struct MeshPushConstants {
-			glm::vec4 data;
-			glm::mat4 render_matrix;
-		};
 		struct PosColorNormalVertex
 		{
+			struct MeshPushConstants {
+				glm::vec4 data;
+				glm::mat4 render_matrix;
+			};
+
 			glm::vec3 position;
 			glm::vec3 normal;
 			glm::vec3 color;
 
 			static VertexLayout layout;
+			static MeshPushConstants pushConstantData;
 			static void Init()
 			{
 				layout
@@ -28,7 +30,6 @@ namespace LearnVulkan {
 			};
 		};
 		static VertexBuffer triangleBuffer;
-		static MeshPushConstants pushConstantData;
 
 		static Window window;
 		static Renderer renderer;

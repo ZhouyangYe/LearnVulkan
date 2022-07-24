@@ -110,9 +110,6 @@ namespace LearnVulkan {
 		this->device = device;
 		_renderPass = renderPass;
 
-		// reset builder info
-		pipelineBuilder = {};
-
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// we are not using descriptor sets or other systems yet, so no need to use anything other than empty default
 		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info();
