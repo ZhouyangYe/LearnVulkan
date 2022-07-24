@@ -9,7 +9,7 @@ namespace LearnVulkan
 			switch(event.keyCode) {
 				case Key::Space:
 					if (event.action == KeyPressEvent::ACTION::KEY_DOWN) {
-						AppState::pipeline.setSelectedPipeline((AppState::pipeline.getSelectedPipelineIndex() + 1) % 2);
+						AppState::triangleBuffer.setSelectedPipeline((AppState::triangleBuffer.selectedIndex + 1) % 2);
 					}
 					break;
 				default:

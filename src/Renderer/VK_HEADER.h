@@ -4,7 +4,6 @@
 #include <vk_mem_alloc.h>
 #include "Core/Common.h"
 #include "Window/Window.h"
-#include "MeshBuffer.h"
 
 #define VK_CHECK(x)                                                    \
 	do                                                                 \

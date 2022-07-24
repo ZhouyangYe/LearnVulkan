@@ -15,6 +15,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <bitset>
+#include <atomic>
 #include <thread>
 #include <chrono>
 #include <mutex>

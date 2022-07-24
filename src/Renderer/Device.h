@@ -21,9 +21,6 @@ namespace LearnVulkan {
 
 		void init_vulkan(Window* window);
 
-		void upload_mesh(const void* vertices, uint64_t size, uint32_t num, VertexBuffer& vBuffer);
-		void destroy_buffer(VertexBuffer& vBuffer);
-
 		void submit(VkSubmitInfo& submitInfo, VkFence& renderFence);
 		void present(VkPresentInfoKHR& presentInfo);
 	private:

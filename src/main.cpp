@@ -1,7 +1,7 @@
-#include "Core/App.h"
+#include "Core/Application.h"
 
 int main(int argc, char* argv[]) {
-    LearnVulkan::App app;
+    LearnVulkan::Application app;
 
     try {
         app.Run();

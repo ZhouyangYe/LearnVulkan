@@ -5,6 +5,10 @@
 namespace LearnVulkan {
 	class AppState {
 	public:
+		struct MeshPushConstants {
+			glm::vec4 data;
+			glm::mat4 render_matrix;
+		};
 		struct PosColorNormalVertex
 		{
 			glm::vec3 position;
@@ -19,10 +23,12 @@ namespace LearnVulkan {
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
-					.end();;
+					.add_constant(sizeof(MeshPushConstants), &pushConstantData)
+					.end();
 			};
 		};
 		static VertexBuffer triangleBuffer;
+		static MeshPushConstants pushConstantData;
 
 		static Window window;
 		static Renderer renderer;

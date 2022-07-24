@@ -55,7 +55,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(Pipeline& pipeline, VertexBuffer& vBuffer)
+	void Renderer::Draw(VertexBuffer& vBuffer)
 	{
 		sync.sync_gpu();
 
@@ -65,11 +65,16 @@ namespace LearnVulkan {
 		commandBuffer.begin_renderPass(swapChain._swapchain, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
 		// rendering commands
-		pipeline.bind(commandBuffer._mainCommandBuffer);
+		Pipeline* pipeline = vBuffer.pipeline;
+		// bind pipeline
+		pipeline->bind(commandBuffer._mainCommandBuffer, vBuffer.selectedIndex);
 
 		// bind the mesh vertex buffer with offset 0
 		VkDeviceSize offset = 0;
 		vkCmdBindVertexBuffers(commandBuffer._mainCommandBuffer, 0, 1, &vBuffer._buffer, &offset);
+
+		// upload push constants
+		pipeline->upload_pushConstants(commandBuffer._mainCommandBuffer);
 
 		// draw
 		vkCmdDraw(commandBuffer._mainCommandBuffer, vBuffer.vertice_num, 1, 0, 0);
@@ -95,7 +100,7 @@ namespace LearnVulkan {
 		device.submit(submit, sync._renderFence);
 
 		// prepare present
-		// this will put the image we just rendered to into the visible window.
+		// this will put the image we just rendered into the visible window.
 		// we want to wait on the _renderSemaphore for that,
 		// as its necessary that drawing commands have finished before the image is displayed to the user
 		VkPresentInfoKHR presentInfo = vkinit::present_info();

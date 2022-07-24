@@ -106,12 +106,23 @@ namespace LearnVulkan {
 
 	void Pipeline::init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout)
 	{
+		this->layout = &layout;
 		this->device = device;
 		_renderPass = renderPass;
+
+		// reset builder info
+		pipelineBuilder = {};
 
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// we are not using descriptor sets or other systems yet, so no need to use anything other than empty default
 		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info();
+
+		// TODO: add default push_constants, for instance: MVP
+		int constants_num = layout.description.constants.size();
+		if (constants_num) {
+			pipeline_layout_info.pPushConstantRanges = layout.description.constants.data();
+			pipeline_layout_info.pushConstantRangeCount = constants_num;
+		}
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
@@ -182,23 +193,22 @@ namespace LearnVulkan {
 		vkDestroyPipelineLayout(device->_device, pipelineLayout, nullptr);
 	}
 
-	VkPipeline& Pipeline::getSelectedPipeline()
-	{
-		return pipelines[selectedPipelineIndex];
-	}
-
-	void Pipeline::setSelectedPipeline(int index)
-	{
-		selectedPipelineIndex = index;
-	}
-
-	void Pipeline::bind(VkCommandBuffer& cmd)
+	void Pipeline::bind(VkCommandBuffer& cmd, uint32_t& selectedPipelineIndex)
 	{
 		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[selectedPipelineIndex]);
 	}
 
-	const int& Pipeline::getSelectedPipelineIndex()
+	void Pipeline::upload_pushConstants(VkCommandBuffer& cmd)
 	{
-		return selectedPipelineIndex;
+		// TODO: add default push_constants, for instance: MVP
+		auto constants = &layout->description.constants;
+		auto constants_data = &layout->description.constants_data;
+		uint32_t offset = 0;
+		for (uint32_t i = 0, length = constants->size(); i < length; ++i) {
+			//upload the matrix to the GPU via push constants
+			uint32_t size = (*constants)[i].size;
+			vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, (*constants_data)[i]);
+			offset += size;
+		}
 	}
 }

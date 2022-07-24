@@ -4,11 +4,12 @@
 #include "Renderer/Renderer.h"
 
 namespace LearnVulkan {
-	class App {
+	class Application {
 	public:
-		App();
-		~App();
+		Application();
+		~Application();
 		void Run();
 	private:
+		uint32_t _frameNumber{ 0 };
 	};
 }

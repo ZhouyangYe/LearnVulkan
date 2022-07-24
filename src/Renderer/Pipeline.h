@@ -33,21 +33,19 @@ namespace LearnVulkan {
 		Pipeline();
 		~Pipeline();
 
-		void bind(VkCommandBuffer& cmd);
+		void bind(VkCommandBuffer& cmd, uint32_t& selectedPipelineIndex);
+		void upload_pushConstants(VkCommandBuffer& cmd);
 
 		VkShaderModule load_shader_module(const char* filePath);
 		void init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout);
 		void Destroy();
 		void add_pipeline(const char* vertexShaderPath, const char* fragmentShaderPath);
-		VkPipeline& getSelectedPipeline();
-		const int& getSelectedPipelineIndex();
-		void setSelectedPipeline(int index);
 	private:
+		VertexLayout* layout;
 		Device* device;
 		VkRenderPass* _renderPass;
 		VkPipelineLayout pipelineLayout;
 		//build the stage-create-info for both vertex and fragment stages. This lets the pipeline know the shader modules per stage
 		PipelineBuilder pipelineBuilder;
-		uint32_t selectedPipelineIndex = 0;
 	};
 }
