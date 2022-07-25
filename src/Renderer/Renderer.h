@@ -38,7 +38,7 @@ namespace LearnVulkan {
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw(VertexBuffer& vBuffer, Pipeline& pipeline, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num);
+		void Draw(Pipeline& pipeline, VertexBuffer& vBuffer, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num);
 
 		void initPipeline(Pipeline& pipeline, VertexLayout& layout);
 

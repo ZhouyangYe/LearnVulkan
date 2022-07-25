@@ -57,7 +57,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(VertexBuffer& vBuffer, Pipeline& pipeline, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num)
+	void Renderer::Draw(Pipeline& pipeline, VertexBuffer& vBuffer, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num)
 	{
 		sync.sync_gpu();
 

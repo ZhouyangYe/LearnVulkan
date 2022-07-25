@@ -204,7 +204,7 @@ namespace LearnVulkan {
 		colorBlendAttachment.blendEnable = VK_FALSE;
 		return colorBlendAttachment;
 	}
-	VkPipelineLayoutCreateInfo vkinit::pipeline_layout_create_info() {
+	VkPipelineLayoutCreateInfo vkinit::pipeline_layout_create_info(std::vector<VkPushConstantRange>& constants) {
 		VkPipelineLayoutCreateInfo info{};
 		info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		info.pNext = nullptr;
@@ -213,8 +213,8 @@ namespace LearnVulkan {
 		info.flags = 0;
 		info.setLayoutCount = 0;
 		info.pSetLayouts = nullptr;
-		info.pushConstantRangeCount = 0;
-		info.pPushConstantRanges = nullptr;
+		info.pushConstantRangeCount = constants.size();
+		info.pPushConstantRanges = constants.data();
 		return info;
 	}
 

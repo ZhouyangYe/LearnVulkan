@@ -2,7 +2,7 @@
 
 namespace LearnVulkan
 {
-	Camera::Camera() : WORLD_UP{ 0.0f, 0.0f, 1.0f } {}
+	Camera::Camera(Time* time) : time(time), WORLD_UP{ 0.0f, 0.0f, 1.0f } {}
 
 	Camera::~Camera() {}
 
@@ -109,38 +109,31 @@ namespace LearnVulkan
 
 	void Camera::MoveUp()
 	{
-		// eye.z += WALK_SPEED * Time::getDeltaTime();
-		eye.z += WALK_SPEED;
+		eye.z += WALK_SPEED * time->getDeltaTime();
 		updateCam();
 	}
 
 	void Camera::MoveDown()
 	{
-		// eye.z += -WALK_SPEED * Time::getDeltaTime();
-		eye.z += -WALK_SPEED;
+		eye.z += -WALK_SPEED * time->getDeltaTime();
 		updateCam();
 	}
 
 	void Camera::MoveLeft()
 	{
-		// eye += -right * WALK_SPEED * (float)Time::getDeltaTime();
-		eye += -right * WALK_SPEED;
+		eye += -right * WALK_SPEED * (float)time->getDeltaTime();
 		updateCam();
 	}
 
 	void Camera::MoveRight()
 	{
-		// eye += right * WALK_SPEED * (float)Time::getDeltaTime();
-		eye += right * WALK_SPEED;
+		eye += right * WALK_SPEED * (float)time->getDeltaTime();
 		updateCam();
 	}
 
 	void Camera::MoveForward()
 	{
-		/*float movement = WALK_SPEED * (float)Time::getDeltaTime();
-		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
-		eye += glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };*/
-		float movement = WALK_SPEED;
+		float movement = WALK_SPEED * (float)time->getDeltaTime();
 		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
 		eye += glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };
 		updateCam();
@@ -148,10 +141,7 @@ namespace LearnVulkan
 
 	void Camera::MoveBackward()
 	{
-		/*float movement = WALK_SPEED * (float)Time::getDeltaTime();
-		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
-		eye += -glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };*/
-		float movement = WALK_SPEED;
+		float movement = WALK_SPEED * (float)time->getDeltaTime();
 		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
 		eye += -glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };
 		updateCam();
@@ -159,26 +149,13 @@ namespace LearnVulkan
 
 	void Camera::Rotate(glm::vec2 delta)
 	{
-		/*forward = glm::mat3(
-			glm::rotate(-delta.x * (float)Time::getDeltaTime(), WORLD_UP) *
-			glm::rotate(-delta.y * (float)Time::getDeltaTime(), right)
-		) * forward;
-
-		right = glm::mat3(
-			glm::rotate(-delta.x * (float)Time::getDeltaTime(), WORLD_UP)
-		) * right;
-
-		up = glm::normalize(glm::cross(right, forward));
-
-		offset = zoom * forward;*/
-
 		forward = glm::mat3(
-			glm::rotate(-delta.x, WORLD_UP) *
-			glm::rotate(-delta.y, right)
+			glm::rotate(-delta.x * (float)time->getDeltaTime(), WORLD_UP) *
+			glm::rotate(-delta.y * (float)time->getDeltaTime(), right)
 		) * forward;
 
 		right = glm::mat3(
-			glm::rotate(-delta.x, WORLD_UP)
+			glm::rotate(-delta.x * (float)time->getDeltaTime(), WORLD_UP)
 		) * right;
 
 		up = glm::normalize(glm::cross(right, forward));

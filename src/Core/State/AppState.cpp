@@ -5,7 +5,8 @@ namespace LearnVulkan {
 	Renderer AppState::renderer;
 	Pipeline AppState::pipeline;
 	Cursor AppState::cursor(&AppState::window);
-	Camera AppState::camera;
+	Time AppState::time(&AppState::window);
+	Camera AppState::camera(&AppState::time);
 
 	VertexLayout AppState::PosColorNormalVertex::layout;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Window/Window.h"
 #include "Core/Cursor.h"
+#include "Core/Time.h"
 #include "Camera/Camera.h"
 #include "Renderer/Renderer.h"
 
@@ -30,6 +31,7 @@ namespace LearnVulkan {
 		static Renderer renderer;
 		static Pipeline pipeline;
 		static Cursor cursor;
+		static Time time;
 		static Camera camera;
 		static void Init();
 		static void Wait();

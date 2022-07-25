@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Common.h"
 #include "Renderer/Renderer.h"
+#include "Core/Time.h"
 
 #define WALK_SPEED 2.0f
 #define SPRINT_SPEED 3.0f
@@ -36,7 +37,7 @@ namespace LearnVulkan
 		bool moveForward = false;
 		bool moveBackward = false;
 
-		Camera();
+		Camera(Time* time);
 		~Camera();
 
 		const glm::vec3& getEyeCoords();
@@ -59,6 +60,7 @@ namespace LearnVulkan
 		void zoomOut();
 		void setCamPos(glm::vec3& pos);
 	private:
+		Time* time;
 		glm::mat4 view;
 		glm::mat4 proj;
 		glm::vec3 eye;

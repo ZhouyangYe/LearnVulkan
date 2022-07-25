@@ -51,6 +51,7 @@ namespace LearnVulkan {
 		void showCursor();
 		void setCursorPos(double width, double height);
 		void setWindowSize(WindowSize s);
+		double getCurrentTime();
 
 		void setEventCallback(const std::function<void(Event& e)>& fn);
 

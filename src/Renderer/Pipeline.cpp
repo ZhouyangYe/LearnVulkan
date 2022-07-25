@@ -125,19 +125,14 @@ namespace LearnVulkan {
 
 	void Pipeline::init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout)
 	{
-		this->layout = &layout;
 		this->device = device;
 		_renderPass = renderPass;
 
 		pipelineBuilder = {};
 
 		// build the pipeline layout that controls the inputs/outputs of the shader
-		// we are not using descriptor sets or other systems yet, so no need to use anything other than empty default
-		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info();
-
 		// add push_constants, for instance: MVP
-		pipeline_layout_info.pPushConstantRanges = constants.data();
-		pipeline_layout_info.pushConstantRangeCount = constants.size();
+		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants);
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
@@ -187,7 +182,6 @@ namespace LearnVulkan {
 
 			// build pipeline
 			pipelines.push_back(pipelineBuilder.build_pipeline(device->_device, *_renderPass));
-			layouts.push_back(layout);
 
 			// clear the shader stages for the builder
 			pipelineBuilder._shaderStages.clear();

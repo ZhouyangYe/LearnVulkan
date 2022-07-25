@@ -23,6 +23,8 @@ namespace LearnVulkan {
 			});
 
 		GameState::Init();
+
+		AppState::time.Init();
 	}
 
 	Application::~Application() {
@@ -36,6 +38,9 @@ namespace LearnVulkan {
 			if (AppState::window.isMinimized()) {
 				continue;
 			}
+
+			AppState::time.updateTime();
+			// if (Info::shouldShowInfo()) Time::updateFps();
 
 			AppState::window.Begin();
 			AppState::camera.Begin();

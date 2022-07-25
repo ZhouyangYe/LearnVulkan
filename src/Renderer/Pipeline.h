@@ -33,9 +33,7 @@ namespace LearnVulkan {
 			ShaderError(std::string desc) : desc(desc) {}
 		};
 
-		VertexLayout* layout;
 		std::vector<VkPipeline> pipelines;
-		std::vector<VertexLayout*> layouts;
 
 		Pipeline();
 		~Pipeline();
@@ -53,8 +51,8 @@ namespace LearnVulkan {
 	private:
 		Device* device;
 		VkRenderPass* _renderPass;
-		VkPipelineLayout pipelineLayout;
-		//build the stage-create-info for both vertex and fragment stages. This lets the pipeline know the shader modules per stage
+		VkPipelineLayout pipelineLayout; // TODO: support multiple layout
+		// build the stage-create-info for both vertex and fragment stages. This lets the pipeline know the shader modules per stage
 		PipelineBuilder pipelineBuilder;
 		std::vector<VkPushConstantRange> constants;
 	};

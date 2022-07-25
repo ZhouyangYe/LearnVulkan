@@ -58,6 +58,11 @@ namespace LearnVulkan {
         return center;
     }
 
+    double Window::getCurrentTime()
+    {
+        return glfwGetTime();
+    }
+
     void Window::setWindowSize(WindowSize s)
     {
         size.width = s.width;
