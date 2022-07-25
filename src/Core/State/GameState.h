@@ -8,7 +8,6 @@ namespace LearnVulkan {
 
 		struct Triangle {
 			static uint32_t vertice_num;
-			static VertexBuffer* vertex_buffer;
 			static uint32_t selectedIndex;
 			static uint32_t selectedPipelineIndex;
 			static std::vector<uint32_t> pipelines;

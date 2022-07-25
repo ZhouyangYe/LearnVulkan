@@ -2,7 +2,6 @@
 
 namespace LearnVulkan {
 	uint32_t GameState::Triangle::vertice_num = 3;
-	VertexBuffer* GameState::Triangle::vertex_buffer;
 	uint32_t GameState::Triangle::selectedIndex;
 	uint32_t GameState::Triangle::selectedPipelineIndex;
 	std::vector<uint32_t> GameState::Triangle::pipelines;
@@ -32,7 +31,6 @@ namespace LearnVulkan {
 
 		AppState::renderer.device.upload_mesh(triangleBuffer, vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
 
-		Triangle::vertex_buffer = &triangleBuffer;
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);
 	}
