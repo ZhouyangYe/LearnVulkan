@@ -7,8 +7,6 @@ namespace LearnVulkan {
 		struct VertexInputDescription {
 			std::vector<VkVertexInputBindingDescription> bindings;
 			std::vector<VkVertexInputAttributeDescription> attributes;
-			std::vector<VkPushConstantRange> constants;
-			std::vector<const void*> constants_data;
 
 			VkPipelineVertexInputStateCreateFlags flags = 0;
 		};
@@ -20,7 +18,7 @@ namespace LearnVulkan {
 
 		VertexLayout& begin();
 		VertexLayout& add(VkFormat format, uint32_t size);
-		VertexLayout& add_constant(uint32_t size, const void* data);
+		VertexLayout& add_binding();
 		void end();
 		const uint32_t& getConstantSize();
 	private:

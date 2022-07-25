@@ -38,12 +38,41 @@ namespace LearnVulkan {
         m_window_data.eventHandler = fn;
     }
 
-	Window::Window() : title("Untitled"), m_window(nullptr), shouldWindowClose(false) {}
+    void Window::hideCursor()
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    void Window::showCursor()
+    {
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    void Window::setCursorPos(double width, double height)
+    {
+        glfwSetCursorPos(m_window, width, height);
+    }
+
+    const glm::vec2& Window::getCenter()
+    {
+        return center;
+    }
+
+    void Window::setWindowSize(WindowSize s)
+    {
+        size.width = s.width;
+        size.height = s.height;
+        center = glm::vec2{ s.width / 2, s.height / 2 };
+    }
+
+	Window::Window() : title("Untitled"), m_window(nullptr), shouldWindowClose(false), size(0.0f, 0.0f) {}
 
     Window::~Window() {}
 
     void Window::Init(WindowProps& props) {
         title = props.title;
+
+        setWindowSize({ props.width, props.height });
 
         glfwInit();
 

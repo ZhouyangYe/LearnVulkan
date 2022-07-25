@@ -1,5 +1,6 @@
 #pragma once
 #include "VK_HEADER.h"
+#include "MeshBuffer.h"
 
 namespace LearnVulkan {
 	class Device {
@@ -20,6 +21,8 @@ namespace LearnVulkan {
 		void Destroy();
 
 		void init_vulkan(Window* window);
+		void upload_mesh(VertexBuffer& buffer, const void* vertices, uint64_t size);
+		void destroy_buffer(VertexBuffer& buffer);
 
 		void submit(VkSubmitInfo& submitInfo, VkFence& renderFence);
 		void present(VkPresentInfoKHR& presentInfo);

@@ -57,9 +57,28 @@ namespace LearnVulkan {
 		}
 	}
 
-	Pipeline::Pipeline() {}
+	Pipeline::Pipeline() {
+		add_constant(sizeof(MeshPushConstants));
+	}
 
 	Pipeline::~Pipeline() {}
+
+	Pipeline& Pipeline::add_constant(uint32_t size)
+	{
+		//setup push constants
+		VkPushConstantRange push_constant;
+		//this push constant range starts at the beginning
+		push_constant.offset = constant_offset;
+		//this push constant range takes up the size of a MeshPushConstants struct
+		push_constant.size = size;
+		//this push constant range is accessible only in the vertex shader
+		push_constant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		constants.push_back(push_constant);
+
+		constant_offset += size;
+		return *this;
+	}
 
 	VkShaderModule Pipeline::load_shader_module(const char* filePath)
 	{
@@ -110,16 +129,15 @@ namespace LearnVulkan {
 		this->device = device;
 		_renderPass = renderPass;
 
+		pipelineBuilder = {};
+
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// we are not using descriptor sets or other systems yet, so no need to use anything other than empty default
 		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info();
 
-		// TODO: add default push_constants, for instance: MVP
-		int constants_num = layout.description.constants.size();
-		if (constants_num) {
-			pipeline_layout_info.pPushConstantRanges = layout.description.constants.data();
-			pipeline_layout_info.pushConstantRangeCount = constants_num;
-		}
+		// add push_constants, for instance: MVP
+		pipeline_layout_info.pPushConstantRanges = constants.data();
+		pipeline_layout_info.pushConstantRangeCount = constants.size();
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
@@ -169,6 +187,7 @@ namespace LearnVulkan {
 
 			// build pipeline
 			pipelines.push_back(pipelineBuilder.build_pipeline(device->_device, *_renderPass));
+			layouts.push_back(layout);
 
 			// clear the shader stages for the builder
 			pipelineBuilder._shaderStages.clear();
@@ -195,17 +214,12 @@ namespace LearnVulkan {
 		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[selectedPipelineIndex]);
 	}
 
-	void Pipeline::upload_pushConstants(VkCommandBuffer& cmd)
+	void Pipeline::upload_pushConstants(VkCommandBuffer& cmd, const void* data)
 	{
-		// TODO: add default push_constants, for instance: MVP
-		auto constants = &layout->description.constants;
-		auto constants_data = &layout->description.constants_data;
 		uint32_t offset = 0;
-		for (uint32_t i = 0, length = constants->size(); i < length; ++i) {
-			//upload the matrix to the GPU via push constants
-			uint32_t size = (*constants)[i].size;
-			vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, (*constants_data)[i]);
-			offset += size;
-		}
+		//upload the matrix to the GPU via push constants
+		uint32_t size = sizeof(MeshPushConstants);
+		vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, data);
+		offset += size;
 	}
 }

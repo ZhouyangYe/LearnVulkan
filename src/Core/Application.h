@@ -1,7 +1,8 @@
 #pragma once
 #include "EventsHandler.h";
-#include "State/AppState.h"
 #include "Renderer/Renderer.h"
+#include "World/World.h"
+#include "Cursor.h"
 
 namespace LearnVulkan {
 	class Application {
@@ -10,6 +11,6 @@ namespace LearnVulkan {
 		~Application();
 		void Run();
 	private:
-		uint32_t _frameNumber{ 0 };
+		World world;
 	};
 }

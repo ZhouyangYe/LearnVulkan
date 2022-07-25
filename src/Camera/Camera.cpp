@@ -73,6 +73,7 @@ namespace LearnVulkan
 		updateCam();
 		proj = glm::perspective(glm::radians(75.0f), float(param.windowSize.width) / float(param.windowSize.height), 0.1f, param.view_distance);
 		view = glm::lookAt(cam, eye + forward, up);
+		Renderer::setViewTransform(view, proj);
 	}
 
 	void Camera::Terminate()
@@ -103,30 +104,34 @@ namespace LearnVulkan
 		isCameraMoved = false;
 		isCameraRotated = false;
 
-		// bgfx::setViewTransform(Tools::DEFAULT_VIEW_ID, &view, &proj);
+		Renderer::setViewTransform(view, proj);
 	}
 
 	void Camera::MoveUp()
 	{
 		// eye.z += WALK_SPEED * Time::getDeltaTime();
+		eye.z += WALK_SPEED;
 		updateCam();
 	}
 
 	void Camera::MoveDown()
 	{
 		// eye.z += -WALK_SPEED * Time::getDeltaTime();
+		eye.z += -WALK_SPEED;
 		updateCam();
 	}
 
 	void Camera::MoveLeft()
 	{
 		// eye += -right * WALK_SPEED * (float)Time::getDeltaTime();
+		eye += -right * WALK_SPEED;
 		updateCam();
 	}
 
 	void Camera::MoveRight()
 	{
 		// eye += right * WALK_SPEED * (float)Time::getDeltaTime();
+		eye += right * WALK_SPEED;
 		updateCam();
 	}
 
@@ -135,6 +140,9 @@ namespace LearnVulkan
 		/*float movement = WALK_SPEED * (float)Time::getDeltaTime();
 		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
 		eye += glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };*/
+		float movement = WALK_SPEED;
+		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
+		eye += glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };
 		updateCam();
 	}
 
@@ -143,6 +151,9 @@ namespace LearnVulkan
 		/*float movement = WALK_SPEED * (float)Time::getDeltaTime();
 		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
 		eye += -glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };*/
+		float movement = WALK_SPEED;
+		glm::vec2 horizontal = glm::normalize(glm::vec2{ forward.x, forward.y });
+		eye += -glm::vec3{ horizontal.x * movement, horizontal.y * movement, 0.0f };
 		updateCam();
 	}
 
@@ -160,6 +171,19 @@ namespace LearnVulkan
 		up = glm::normalize(glm::cross(right, forward));
 
 		offset = zoom * forward;*/
+
+		forward = glm::mat3(
+			glm::rotate(-delta.x, WORLD_UP) *
+			glm::rotate(-delta.y, right)
+		) * forward;
+
+		right = glm::mat3(
+			glm::rotate(-delta.x, WORLD_UP)
+		) * right;
+
+		up = glm::normalize(glm::cross(right, forward));
+
+		offset = zoom * forward;
 
 		updateCam();
 		isCameraRotated = true;

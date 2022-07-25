@@ -46,6 +46,11 @@ namespace LearnVulkan {
 		const WindowSize getWindowSize();
 		const WindowSize getFrameBufferSize();
 		void getSurface(VkInstance& instance, VkSurfaceKHR& surface);
+		const glm::vec2& getCenter();
+		void hideCursor();
+		void showCursor();
+		void setCursorPos(double width, double height);
+		void setWindowSize(WindowSize s);
 
 		void setEventCallback(const std::function<void(Event& e)>& fn);
 
@@ -57,9 +62,12 @@ namespace LearnVulkan {
 		Window();
 		~Window();
 	private:
-		std::string title;
 		GLFWwindow* m_window;
 		WindowData m_window_data;
+
+		std::string title;
 		bool shouldWindowClose;
+		glm::vec2 center;
+		WindowSize size;
 	};
 }

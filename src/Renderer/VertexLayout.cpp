@@ -12,8 +12,6 @@ namespace LearnVulkan {
 
 	VertexLayout& VertexLayout::begin()
 	{
-		location = 0;
-		layout_offset = 0;
 		constant_offset = 0;
 
 		return *this;
@@ -34,32 +32,24 @@ namespace LearnVulkan {
 		return *this;
 	}
 
-	VertexLayout& VertexLayout::add_constant(uint32_t size, const void* data)
+	VertexLayout& VertexLayout::add_binding()
 	{
-		//setup push constants
-		VkPushConstantRange push_constant;
-		//this push constant range starts at the beginning
-		push_constant.offset = constant_offset;
-		//this push constant range takes up the size of a MeshPushConstants struct
-		push_constant.size = size;
-		//this push constant range is accessible only in the vertex shader
-		push_constant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		// add bindings
+		VkVertexInputBindingDescription binding = {};
+		binding.binding = 0;
+		binding.stride = layout_offset;
+		binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-		description.constants.push_back(push_constant);
-		description.constants_data.push_back(data);
+		description.bindings.push_back(binding);
 
-		constant_offset += size;
+		layout_offset = 0;
+		location = 0;
 		return *this;
 	}
 
+
 	void VertexLayout::end()
 	{
-		// add bindings
-		VkVertexInputBindingDescription mainBinding = {};
-		mainBinding.binding = 0;
-		mainBinding.stride = layout_offset;
-		mainBinding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-		description.bindings.push_back(mainBinding);
 	}
 }

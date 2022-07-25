@@ -14,7 +14,7 @@ namespace LearnVulkan
 	public:
 		struct WindowSize
 		{
-			int width, height;
+			uint32_t width, height;
 		};
 
 		struct CameraParam
@@ -22,7 +22,7 @@ namespace LearnVulkan
 			WindowSize windowSize;
 			float view_distance;
 			glm::vec3 spawnLocation;
-			float zoom = MAX_DISTANCE;
+			float zoom = 0.f;
 			glm::vec3 forward{ 1.0f, 0.0f, 0.0f };
 			glm::vec3 up{ 0.0f, 0.0f, 1.0f };
 		};

@@ -1,5 +1,7 @@
 #pragma once
 #include "Window/Window.h"
+#include "Core/Cursor.h"
+#include "Camera/Camera.h"
 #include "Renderer/Renderer.h"
 
 namespace LearnVulkan {
@@ -7,17 +9,11 @@ namespace LearnVulkan {
 	public:
 		struct PosColorNormalVertex
 		{
-			struct MeshPushConstants {
-				glm::vec4 data;
-				glm::mat4 render_matrix;
-			};
-
 			glm::vec3 position;
 			glm::vec3 normal;
 			glm::vec3 color;
 
 			static VertexLayout layout;
-			static MeshPushConstants pushConstantData;
 			static void Init()
 			{
 				layout
@@ -25,16 +21,18 @@ namespace LearnVulkan {
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
-					.add_constant(sizeof(MeshPushConstants), &pushConstantData)
+					.add_binding()
 					.end();
 			};
 		};
-		static VertexBuffer triangleBuffer;
 
 		static Window window;
 		static Renderer renderer;
 		static Pipeline pipeline;
+		static Cursor cursor;
+		static Camera camera;
 		static void Init();
+		static void Wait();
 		static void Destroy();
 	private:
 	};

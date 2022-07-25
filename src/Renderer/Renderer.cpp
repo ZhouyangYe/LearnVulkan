@@ -1,6 +1,8 @@
 #include "Renderer.h"
 
 namespace LearnVulkan {
+	glm::mat4 Renderer::projection_view;
+
 	Renderer::Renderer()
 		: commandBuffer(&device), swapChain(&device), sync(&device)
 	{}
@@ -55,7 +57,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(VertexBuffer& vBuffer)
+	void Renderer::Draw(VertexBuffer& vBuffer, Pipeline& pipeline, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num)
 	{
 		sync.sync_gpu();
 
@@ -65,19 +67,21 @@ namespace LearnVulkan {
 		commandBuffer.begin_renderPass(swapChain._swapchain, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
 		// rendering commands
-		Pipeline* pipeline = vBuffer.pipeline;
 		// bind pipeline
-		pipeline->bind(commandBuffer._mainCommandBuffer, vBuffer.selectedIndex);
+		pipeline.bind(commandBuffer._mainCommandBuffer, selectedPipelineIndex);
 
 		// bind the mesh vertex buffer with offset 0
 		VkDeviceSize offset = 0;
 		vkCmdBindVertexBuffers(commandBuffer._mainCommandBuffer, 0, 1, &vBuffer._buffer, &offset);
 
 		// upload push constants
-		pipeline->upload_pushConstants(commandBuffer._mainCommandBuffer);
+		// calculate mvp matrix
+		MeshPushConstants constants;
+		constants.mvp = Renderer::projection_view * model;
+		pipeline.upload_pushConstants(commandBuffer._mainCommandBuffer, &constants);
 
 		// draw
-		vkCmdDraw(commandBuffer._mainCommandBuffer, vBuffer.vertice_num, 1, 0, 0);
+		vkCmdDraw(commandBuffer._mainCommandBuffer, vertice_num, 1, 0, 0);
 
 		commandBuffer.end_renderPass();
 
@@ -114,5 +118,10 @@ namespace LearnVulkan {
 		presentInfo.pImageIndices = &swapChain.swapchainImageIndex;
 
 		device.present(presentInfo);
+	}
+
+	void Renderer::setViewTransform(glm::mat4& view, glm::mat4& projection)
+	{
+		projection_view = projection * view;
 	}
 }

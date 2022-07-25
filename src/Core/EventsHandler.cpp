@@ -9,8 +9,17 @@ namespace LearnVulkan
 			switch(event.keyCode) {
 				case Key::Space:
 					if (event.action == KeyPressEvent::ACTION::KEY_DOWN) {
-						AppState::triangleBuffer.setSelectedPipeline((AppState::triangleBuffer.selectedIndex + 1) % 2);
+						GameState::Triangle::setSelectedIndex((GameState::Triangle::selectedIndex + 1) % 2);
 					}
+					break;
+				case Key::H:
+					if (event.action != KeyPressEvent::ACTION::KEY_DOWN)
+						break;
+					if (AppState::cursor.hideCursor)
+						AppState::cursor.show();
+					else
+						AppState::cursor.hide();
+						AppState::cursor.hideCursor = !AppState::cursor.hideCursor;
 					break;
 				default:
 					break;
@@ -19,6 +28,8 @@ namespace LearnVulkan
 
 		void handleMouseMove(MouseMoveEvent& event)
 		{
+			AppState::cursor.updateCoord({ event.xPos, event.yPos });
+			AppState::camera.Rotate(AppState::cursor.getDeltaCoord());
 		}
 
 		void handleMouseWheel(MouseWheelEvent& event)
