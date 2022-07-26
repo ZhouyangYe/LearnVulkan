@@ -21,13 +21,13 @@ namespace LearnVulkan {
 		renderer.Init(renderProps);
 
 		// init camera
-		camera.Init({ { windowProps.width, windowProps.height }, 200.0f, { 0.f,0.f,-2.f } });
+		camera.Init({ { windowProps.width, windowProps.height }, 200.0f, { 0.f, 0.f, 0.f } });
 
 		// create pipelines
 		PosColorNormalVertex::Init();
 		renderer.initPipeline(pipeline, PosColorNormalVertex::layout);
-		pipeline.add_pipeline("C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin\\vert1.spv", "C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin\\frag1.spv");
-		pipeline.add_pipeline("C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin\\vert2.spv", "C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin\\frag2.spv");
+		pipeline.add_pipeline("vert1", "frag1");
+		pipeline.add_pipeline("vert2", "frag2");
 	}
 
 	void AppState::Wait()

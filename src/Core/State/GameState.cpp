@@ -1,22 +1,28 @@
 #include "GameState.h"
 
 namespace LearnVulkan {
-	uint32_t GameState::Triangle::vertice_num = 3;
-	uint32_t GameState::Triangle::selectedIndex;
-	uint32_t GameState::Triangle::selectedPipelineIndex;
+	// triangle
 	std::vector<uint32_t> GameState::Triangle::pipelines;
+	uint32_t GameState::Triangle::vertice_num = 3;
+	uint32_t GameState::Triangle::selectedIndex = 0;
+	uint32_t GameState::Triangle::selectedPipelineIndex;
 	void GameState::Triangle::setSelectedIndex(uint32_t index)
 	{
 		selectedIndex = index;
 		selectedPipelineIndex = pipelines[index];
 	}
+	VertexBuffer GameState::Triangle::buffer;
 	GameState::Triangle GameState::triangle;
 
-	VertexBuffer GameState::triangleBuffer;
+	// monkey
+	VertexBuffer GameState::Monkey::buffer;
+	uint32_t GameState::Monkey::selectedPipelineIndex = 0;
+	GameState::Monkey GameState::monkey;
+
 
 	void GameState::Init()
 	{
-		// TODO: move vertice to game state
+		// triangle
 		std::vector<AppState::PosColorNormalVertex> vertices;
 		vertices.resize(3);
 		// vertex positions
@@ -29,14 +35,25 @@ namespace LearnVulkan {
 		vertices[1].color = { 0.f, 1.f, 1.0f };
 		vertices[2].color = { 0.f, 1.f, 1.0f };
 
-		AppState::renderer.device.upload_mesh(triangleBuffer, vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
+		AppState::renderer.device.upload_mesh(Triangle::buffer, vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
 
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);
+		Triangle::selectedPipelineIndex = Triangle::pipelines[0];
+
+
+		// monkey
+		std::vector<ModelTools::Mesh> mesh = ModelTools::loadModel(fmt::format("{0}\\{1}", RESOURCE_FOLDER, "models\\monkey_smooth.obj"));
+		for (auto iter = mesh.begin(); iter != mesh.end(); ++iter) {
+			monkey.vertices.emplace_back(iter->position, iter->normal, iter->normal);
+		}
+
+		AppState::renderer.device.upload_mesh(Monkey::buffer, monkey.vertices.data(), monkey.vertices.size() * sizeof(AppState::PosColorNormalVertex));
 	}
 
 	void GameState::Destroy()
 	{
-		AppState::renderer.device.destroy_buffer(triangleBuffer);
+		AppState::renderer.device.destroy_buffer(Triangle::buffer);
+		AppState::renderer.device.destroy_buffer(Monkey::buffer);
 	}
 }

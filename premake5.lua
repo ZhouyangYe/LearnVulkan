@@ -18,6 +18,7 @@ VendorDirs["STB"] = "vendors/stb"
 VendorDirs["TOL"] = "vendors/tiny_obj_loader"
 VendorDirs["VKB"] = "vendors/vk-bootstrap"
 VendorDirs["VMA"] = "vendors/VulkanMemoryAllocator"
+VendorDirs["LOG"] = "vendors/spdlog"
 
 include "vendors/"
 
@@ -29,7 +30,7 @@ project "LearnVulkan"
   targetdir ("%{wks.location}/dist/bin/" .. outputdir .. "/%{prj.name}")
   objdir ("%{wks.location}/dist/obj/" .. outputdir .. "/%{prj.name}")
 
-  files { 
+  files {
     "src/**.h",
     "src/**.cpp",
     "%{VendorDirs.VKB}/src/VkBootstrap.h",
@@ -38,13 +39,14 @@ project "LearnVulkan"
 
   includedirs {
 		"src",
+    "%{VendorDirs.LOG}/include",
 		"%{VendorDirs.GLFW}/include",
 		"%{VendorDirs.FMT}/include",
 		"%{VendorDirs.GLM}",
 		"%{VendorDirs.STB}",
 		"%{VendorDirs.TOL}",
 		"%{VendorDirs.VKB}/src",
-		"%{VendorDirs.VMA}/include",
+		"%{VendorDirs.VMA}/include"
 	}
 
   links {

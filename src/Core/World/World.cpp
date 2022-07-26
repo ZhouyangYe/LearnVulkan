@@ -8,9 +8,11 @@ namespace LearnVulkan {
 	void World::Update()
 	{
 		//model rotation
-		glm::mat4 model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(_frameNumber * 0.4f), glm::vec3(0, 1, 0));
+		glm::mat4 model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(_frameNumber * 0.4f), { 0.f, 1.0f, 0.f });
+		model = glm::translate(model, GameState::monkey.coord);
 		_frameNumber++;
 
-		AppState::renderer.Draw(AppState::pipeline, GameState::triangleBuffer, GameState::Triangle::selectedPipelineIndex, model, GameState::Triangle::vertice_num);
+		uint32_t vertice_num = GameState::monkey.vertices.size();
+		AppState::renderer.Draw(AppState::pipeline, GameState::Monkey::buffer, GameState::Monkey::selectedPipelineIndex, model, vertice_num);
 	}
 }

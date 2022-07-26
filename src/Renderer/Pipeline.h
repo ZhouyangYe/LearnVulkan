@@ -3,6 +3,7 @@
 #include "Device.h"
 #include "VertexLayout.h"
 #include "Helper.h"
+#include "Events/Error.h"
 
 namespace LearnVulkan {
 	struct MeshPushConstants {
@@ -27,12 +28,6 @@ namespace LearnVulkan {
 
 	class Pipeline {
 	public:
-		struct ShaderError {
-			std::string desc;
-
-			ShaderError(std::string desc) : desc(desc) {}
-		};
-
 		std::vector<VkPipeline> pipelines;
 
 		Pipeline();
@@ -47,7 +42,7 @@ namespace LearnVulkan {
 		VkShaderModule load_shader_module(const char* filePath);
 		void init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout);
 		void Destroy();
-		void add_pipeline(const char* vertexShaderPath, const char* fragmentShaderPath);
+		void add_pipeline(std::string vertexShaderName, std::string fragmentShaderName);
 	private:
 		Device* device;
 		VkRenderPass* _renderPass;

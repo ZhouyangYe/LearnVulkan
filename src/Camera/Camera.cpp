@@ -151,7 +151,7 @@ namespace LearnVulkan
 	{
 		forward = glm::mat3(
 			glm::rotate(-delta.x * (float)time->getDeltaTime(), WORLD_UP) *
-			glm::rotate(-delta.y * (float)time->getDeltaTime(), right)
+			glm::rotate(delta.y * (float)time->getDeltaTime(), right)
 		) * forward;
 
 		right = glm::mat3(

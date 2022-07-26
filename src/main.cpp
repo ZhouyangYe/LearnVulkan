@@ -1,6 +1,7 @@
 #include "Core/Application.h"
 
 int main(int argc, char* argv[]) {
+    LearnVulkan::Logger::Init();
     LearnVulkan::Application app;
 
     try {

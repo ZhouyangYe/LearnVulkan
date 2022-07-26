@@ -2,8 +2,8 @@
 #include "Window/Window.h"
 #include "Core/Cursor.h"
 #include "Core/Time.h"
-#include "Camera/Camera.h"
 #include "Renderer/Renderer.h"
+#include "Camera/Camera.h"
 
 namespace LearnVulkan {
 	class AppState {

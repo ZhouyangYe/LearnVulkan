@@ -1,5 +1,5 @@
 #pragma once
-#include "EventsHandler.h";
+#include "EventsHandler/EventsHandler.h";
 #include "Renderer/Renderer.h"
 #include "World/World.h"
 #include "Cursor.h"

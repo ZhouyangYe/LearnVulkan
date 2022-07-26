@@ -46,9 +46,8 @@ namespace LearnVulkan {
 
 		// its easy to error out on create graphics pipeline, so we handle it a bit better than the common VK_CHECK case
 		VkPipeline newPipeline;
-		if (vkCreateGraphicsPipelines(
-			device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &newPipeline) != VK_SUCCESS) {
-			std::cout << "failed to create pipline\n";
+		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &newPipeline) != VK_SUCCESS) {
+			Logger::console->error("failed to create pipline");
 			return VK_NULL_HANDLE; // failed to create graphics pipeline
 		}
 		else
@@ -86,7 +85,7 @@ namespace LearnVulkan {
 		std::ifstream file(filePath, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open()) {
-			throw ShaderError(fmt::format("Failed to open file: ", filePath));
+			throw Error(fmt::format("Failed to open file: {}", filePath));
 		}
 
 		// find what the size of the file is by looking up the location of the cursor
@@ -117,7 +116,7 @@ namespace LearnVulkan {
 		// check that the creation goes well.
 		VkShaderModule shaderModule;
 		if (vkCreateShaderModule(device->_device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-			throw ShaderError(fmt::format("Failed to create shader module: ", filePath));
+			throw Error(fmt::format("Failed to create shader module: {}", filePath));
 		}
 
 		return shaderModule;
@@ -167,11 +166,11 @@ namespace LearnVulkan {
 		pipelineBuilder._pipelineLayout = pipelineLayout;
 	}
 
-	void Pipeline::add_pipeline(const char* vertexShaderPath, const char* fragmentShaderPath)
+	void Pipeline::add_pipeline(std::string vertexShaderName, std::string fragmentShaderName)
 	{
 		try {
-			VkShaderModule fragShader = load_shader_module(fragmentShaderPath);
-			VkShaderModule vertexShader = load_shader_module(vertexShaderPath);
+			VkShaderModule vertexShader = load_shader_module(fmt::format("{0}\\{1}.spv", SHADER_FOLDER, vertexShaderName).c_str());
+			VkShaderModule fragShader = load_shader_module(fmt::format("{0}\\{1}.spv", SHADER_FOLDER, fragmentShaderName).c_str());
 
 			// add the other shaders
 			pipelineBuilder._shaderStages.push_back(
@@ -189,8 +188,8 @@ namespace LearnVulkan {
 			vkDestroyShaderModule(device->_device, vertexShader, nullptr);
 			vkDestroyShaderModule(device->_device, fragShader, nullptr);
 		}
-		catch (ShaderError error) {
-			std::cout << error.desc << "\n";
+		catch (Error error) {
+			Logger::console->error(error.desc);
 		}
 	}
 

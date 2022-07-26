@@ -1,9 +1,9 @@
 #pragma once
-#include "Common.h";
+#include "Core/Common.h";
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Window/Window.h"
-#include "State/GameState.h"
+#include "Core/State/GameState.h"
 
 namespace LearnVulkan
 {

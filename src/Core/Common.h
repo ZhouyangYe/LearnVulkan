@@ -22,5 +22,9 @@
 #include <unordered_map>
 #include <deque>
 #include <fmt/core.h>
+#include "Logger.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
+
+#define RESOURCE_FOLDER "C:\\BrighT\\Dev\\LearnVulkan\\resources"
+#define SHADER_FOLDER "C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin"
