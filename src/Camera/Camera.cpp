@@ -69,9 +69,10 @@ namespace LearnVulkan
 		cam = eye - offset;
 		forward = param.forward;
 		up = param.up;
-		right = glm::normalize(glm::cross(Camera::forward, Camera::up));
+		right = glm::normalize(glm::cross(forward, up));
 		updateCam();
 		proj = glm::perspective(glm::radians(75.0f), float(param.windowSize.width) / float(param.windowSize.height), 0.1f, param.view_distance);
+		proj[1][1] *= -1;
 		view = glm::lookAt(cam, eye + forward, up);
 		Renderer::setViewTransform(view, proj);
 	}
@@ -151,7 +152,7 @@ namespace LearnVulkan
 	{
 		forward = glm::mat3(
 			glm::rotate(-delta.x * (float)time->getDeltaTime(), WORLD_UP) *
-			glm::rotate(delta.y * (float)time->getDeltaTime(), right)
+			glm::rotate(-delta.y * (float)time->getDeltaTime(), right)
 		) * forward;
 
 		right = glm::mat3(
