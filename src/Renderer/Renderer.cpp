@@ -52,7 +52,40 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(VertexBuffer& vBuffer, VkPipeline& pipeline, VkPipelineLayout& pipelineLayout, glm::mat4& model, uint32_t& vertice_num)
+	void Renderer::draw_renderables(VkCommandBuffer cmd, Renderable* first, int count)
+	{
+		VkPipeline lastPipeline = nullptr;
+		VkBuffer lastBuffer = nullptr;
+		for (int i = 0; i < count; i++)
+		{
+			Renderable& object = first[i];
+
+			//only bind the pipeline if it doesn't match with the already bound one
+			if (object.pipeline != lastPipeline) {
+				commandBuffer.bind(object.pipeline);
+				lastPipeline = object.pipeline;
+			}
+
+			//only bind the mesh if it's a different one from last bind
+			if (object.buffer._buffer != lastBuffer) {
+				//bind the mesh vertex buffer with offset 0
+				VkDeviceSize offset = 0;
+				vkCmdBindVertexBuffers(cmd, 0, 1, &object.buffer._buffer, &offset);
+				lastBuffer = object.buffer._buffer;
+			}
+
+			// upload push constants
+			MeshPushConstants constants;
+			// calculate mvp matrix
+			constants.mvp = Renderer::projection_view * object.model;
+			upload_pushConstants(cmd, object.pipelineLayout, &constants);
+
+			//we can now draw
+			vkCmdDraw(cmd, object.vertice_num, 1, 0, 0);
+		}
+	}
+
+	void Renderer::Draw(std::vector<Renderable>& objects)
 	{
 		sync.sync_gpu();
 
@@ -61,22 +94,7 @@ namespace LearnVulkan {
 		swapChain.request_imgIndex(sync._presentSemaphore);
 		commandBuffer.begin_renderPass(swapChain._swapchain, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
-		// rendering commands
-		// bind pipeline
-		commandBuffer.bind(pipeline);
-
-		// bind the mesh vertex buffer with offset 0
-		VkDeviceSize offset = 0;
-		vkCmdBindVertexBuffers(commandBuffer._mainCommandBuffer, 0, 1, &vBuffer._buffer, &offset);
-
-		// upload push constants
-		// calculate mvp matrix
-		MeshPushConstants constants;
-		constants.mvp = Renderer::projection_view * model;
-		upload_pushConstants(commandBuffer._mainCommandBuffer, pipelineLayout, &constants);
-
-		// draw
-		vkCmdDraw(commandBuffer._mainCommandBuffer, vertice_num, 1, 0, 0);
+		draw_renderables(commandBuffer._mainCommandBuffer, objects.data(), objects.size());
 
 		commandBuffer.end_renderPass();
 
@@ -115,7 +133,7 @@ namespace LearnVulkan {
 		device.present(presentInfo);
 	}
 
-	void Renderer::upload_pushConstants(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const void* data)
+	void Renderer::upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data)
 	{
 		uint32_t offset = 0;
 		// upload the matrix to the GPU via push constants

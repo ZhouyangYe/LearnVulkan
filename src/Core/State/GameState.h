@@ -5,14 +5,6 @@
 namespace LearnVulkan {
 	class GameState {
 	public:
-		struct Renderable {
-			VertexBuffer buffer;
-			VkPipelineLayout pipelineLayout;
-			VkPipeline pipeline;
-			uint32_t vertice_num;
-			glm::vec3 coord{ 0.0f, 0.0f, 0.0f };
-		};
-
 		struct Triangle {
 			static VertexBuffer buffer;
 			static VkPipelineLayout pipelineLayout;

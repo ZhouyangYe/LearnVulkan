@@ -12,7 +12,7 @@ namespace LearnVulkan {
 		void Update();
 		void Destroy();
 	private:
-		GameState::Monkey monkey;
 		uint32_t _frameNumber{ 0 };
+		std::vector<Renderer::Renderable> objects;
 	};
 }

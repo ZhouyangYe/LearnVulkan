@@ -11,6 +11,14 @@
 namespace LearnVulkan {
 	class Renderer {
 	public:
+		struct Renderable {
+			VertexBuffer buffer;
+			VkPipelineLayout pipelineLayout;
+			VkPipeline pipeline;
+			uint32_t vertice_num;
+			glm::mat4 model;
+		};
+
 		struct RendererProps
 		{
 			Window* window;
@@ -38,11 +46,12 @@ namespace LearnVulkan {
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw(VertexBuffer& vBuffer, VkPipeline& pipeline, VkPipelineLayout& pipelineLayout, glm::mat4& model, uint32_t& vertice_num);
+		void Draw(std::vector<Renderable>& objects);
 
-		void upload_pushConstants(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const void* data);
+		void upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
 		static glm::mat4 projection_view;
+		void draw_renderables(VkCommandBuffer cmd, Renderable* first, int count);
 	};
 }
