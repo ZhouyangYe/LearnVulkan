@@ -12,5 +12,6 @@ namespace LearnVulkan {
 		void Run();
 	private:
 		World world;
+		EventsHandler eventsHandler;
 	};
 }

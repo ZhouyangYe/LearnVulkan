@@ -3,10 +3,10 @@
 namespace LearnVulkan {
 	// triangle
 	VertexBuffer GameState::Triangle::buffer;
-	std::vector<uint32_t> GameState::Triangle::pipelines;
-	uint32_t GameState::Triangle::vertice_num = 3;
 	VkPipelineLayout GameState::Triangle::pipelineLayout;
 	VkPipeline GameState::Triangle::pipeline;
+	std::vector<AppState::PosColorNormalVertex> GameState::Triangle::vertices;
+	std::vector<uint32_t> GameState::Triangle::pipelines;
 	uint32_t GameState::Triangle::selectedPipelineIndex = 0;
 	void GameState::Triangle::setSelectedIndex(uint32_t index)
 	{
@@ -14,34 +14,28 @@ namespace LearnVulkan {
 		pipeline = AppState::pipeline.pipelines[Triangle::pipelines[index]];
 	}
 
-	GameState::Triangle GameState::triangle;
-
 	// monkey
 	VertexBuffer GameState::Monkey::buffer;
 	VkPipelineLayout GameState::Monkey::pipelineLayout;
 	VkPipeline GameState::Monkey::pipeline;
 	std::vector<AppState::PosColorNormalVertex> GameState::Monkey::vertices;
 
-	GameState::Monkey GameState::monkey;
-	GameState::Monkey GameState::monkey2({0.f, -6.0f, 0.f});
-
 
 	void GameState::Init()
 	{
 		// set up triangle data
-		std::vector<AppState::PosColorNormalVertex> vertices;
-		vertices.resize(3);
+		Triangle::vertices.resize(3);
 		// vertex positions
-		vertices[0].position = { 1.f, 1.f, 0.0f };
-		vertices[1].position = { -1.f, 1.f, 0.0f };
-		vertices[2].position = { 0.f,-1.f, 0.0f };
+		Triangle::vertices[0].position = {  1.f, 1.f, 0.0f };
+		Triangle::vertices[1].position = { -1.f, 1.f, 0.0f };
+		Triangle::vertices[2].position = {  0.f,-1.f, 0.0f };
 
 		// vertex colors, cyan
-		vertices[0].color = { 0.f, 1.f, 1.0f };
-		vertices[1].color = { 0.f, 1.f, 1.0f };
-		vertices[2].color = { 0.f, 1.f, 1.0f };
+		Triangle::vertices[0].color = { 0.f, 1.f, 1.0f };
+		Triangle::vertices[1].color = { 0.f, 1.f, 1.0f };
+		Triangle::vertices[2].color = { 0.f, 1.f, 1.0f };
 
-		AppState::renderer.device.upload_mesh(Triangle::buffer, vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
+		AppState::renderer.device.upload_mesh(Triangle::buffer, Triangle::vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
 
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);

@@ -8,8 +8,11 @@ namespace LearnVulkan {
 		World();
 		~World();
 
+		void Init();
 		void Update();
+		void Destroy();
 	private:
+		GameState::Monkey monkey;
 		uint32_t _frameNumber{ 0 };
 	};
 }

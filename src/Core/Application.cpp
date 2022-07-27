@@ -1,21 +1,21 @@
 #include "Application.h"
 
 namespace LearnVulkan {
-	Application::Application() {
+	Application::Application() : eventsHandler(&world) {
 		AppState::Init();
 
-		AppState::window.setEventCallback([](Event& event)
+		AppState::window.setEventCallback([&](Event& event)
 			{
 				switch (event.type)
 				{
 				case Event::TYPE::KEY_PRESS:
-					EventHandler::handleKeyPress((KeyPressEvent&)event);
+					eventsHandler.handleKeyPress((KeyPressEvent&)event);
 					break;
 				case Event::TYPE::MOUSE_MOVE:
-					EventHandler::handleMouseMove((MouseMoveEvent&)event);
+					eventsHandler.handleMouseMove((MouseMoveEvent&)event);
 					break;
 				case Event::TYPE::MOUSE_WHEEL:
-					EventHandler::handleMouseWheel((MouseWheelEvent&)event);
+					eventsHandler.handleMouseWheel((MouseWheelEvent&)event);
 					break;
 				default:
 					break;
@@ -24,11 +24,14 @@ namespace LearnVulkan {
 
 		GameState::Init();
 
+		world.Init();
+
 		AppState::time.Init();
 	}
 
 	Application::~Application() {
 		AppState::Wait();
+		world.Destroy();
 		GameState::Destroy();
 		AppState::Destroy();
 	}
