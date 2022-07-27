@@ -122,10 +122,11 @@ namespace LearnVulkan {
 		return shaderModule;
 	}
 
-	void Pipeline::init_pipeline(VertexLayout& layout)
+	Pipeline& Pipeline::init_layout()
 	{
-
 		pipelineBuilder = {};
+
+		VkPipelineLayout pipelineLayout;
 
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// add default push_constants, for instance: MVP
@@ -133,8 +134,8 @@ namespace LearnVulkan {
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
-		// vertex input controls how to read vertices from vertex buffers. We arent using it yet
-		pipelineBuilder._vertexInputInfo = vkinit::vertex_input_state_create_info(layout);
+		// use the triangle layout we created
+		pipelineBuilder._pipelineLayout = pipelineLayout;
 
 		// input assembly is the configuration for drawing triangle lists, strips, or individual points.
 		// we are just going to draw triangle list
@@ -160,15 +161,24 @@ namespace LearnVulkan {
 		// a single blend attachment with no blending and writing to RGBA
 		pipelineBuilder._colorBlendAttachment = vkinit::color_blend_attachment_state();
 
-		// use the triangle layout we created
-		pipelineBuilder._pipelineLayout = pipelineLayout;
+		layouts.push_back(pipelineLayout);
+
+		return *this;
 	}
 
-	void Pipeline::add_pipeline(std::string vertexShaderName, std::string fragmentShaderName)
+	Pipeline& Pipeline::init_vertex_layout(VertexLayout& layout)
+	{
+		// vertex input controls how to read vertices from vertex buffers.
+		pipelineBuilder._vertexInputInfo = vkinit::vertex_input_state_create_info(layout);
+
+		return *this;
+	}
+
+	Pipeline& Pipeline::add_pipeline(std::string shaderName)
 	{
 		try {
-			VkShaderModule vertexShader = load_shader_module(fmt::format("{0}\\{1}.spv", SHADER_FOLDER, vertexShaderName).c_str());
-			VkShaderModule fragShader = load_shader_module(fmt::format("{0}\\{1}.spv", SHADER_FOLDER, fragmentShaderName).c_str());
+			VkShaderModule vertexShader = load_shader_module(fmt::format("{0}\\{1}_vert.spv", SHADER_FOLDER, shaderName).c_str());
+			VkShaderModule fragShader = load_shader_module(fmt::format("{0}\\{1}_frag.spv", SHADER_FOLDER, shaderName).c_str());
 
 			// add the other shaders
 			pipelineBuilder._shaderStages.push_back(
@@ -189,20 +199,8 @@ namespace LearnVulkan {
 		catch (Error error) {
 			Logger::console->error(error.desc);
 		}
-	}
 
-	void Pipeline::bind(VkCommandBuffer& cmd, uint32_t& selectedPipelineIndex)
-	{
-		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[selectedPipelineIndex]);
-	}
-
-	void Pipeline::upload_pushConstants(VkCommandBuffer& cmd, const void* data)
-	{
-		uint32_t offset = 0;
-		// upload the matrix to the GPU via push constants
-		uint32_t size = sizeof(MeshPushConstants);
-		vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, data);
-		offset += size;
+		return *this;
 	}
 
 	void Pipeline::Destroy()
@@ -211,6 +209,8 @@ namespace LearnVulkan {
 			vkDestroyPipeline(device->_device, *iter, nullptr);
 		}
 
-		vkDestroyPipelineLayout(device->_device, pipelineLayout, nullptr);
+		for (auto iter = layouts.begin(); iter != layouts.end(); ++iter) {
+			vkDestroyPipelineLayout(device->_device, *iter, nullptr);
+		}
 	}
 }

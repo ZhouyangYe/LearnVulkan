@@ -25,9 +25,12 @@ namespace LearnVulkan {
 
 		// create pipelines
 		PosColorNormalVertex::Init();
-		pipeline.init_pipeline(PosColorNormalVertex::layout);
-		pipeline.add_pipeline("vert1", "frag1");
-		pipeline.add_pipeline("vert2", "frag2");
+		pipeline
+			// first layout
+			.init_layout()                                         // layouts 0
+			.init_vertex_layout(PosColorNormalVertex::layout)      // vertex_layouts 0
+			.add_pipeline("shader1")                               // pipelines 0
+			.add_pipeline("shader2");                              // pipelines 1
 	}
 
 	void AppState::Wait()

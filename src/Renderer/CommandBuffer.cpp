@@ -117,4 +117,9 @@ namespace LearnVulkan {
 		//finalize the render pass
 		vkCmdEndRenderPass(_mainCommandBuffer);
 	}
+
+	void CommandBuffer::bind(VkPipeline& pipeline)
+	{
+		vkCmdBindPipeline(_mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	}
 }

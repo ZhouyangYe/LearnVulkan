@@ -10,4 +10,13 @@ namespace LearnVulkan {
 		VertexBuffer();
 		~VertexBuffer();
 	};
+
+	class ImageBuffer {
+	public:
+		VkImage _image;
+		VmaAllocation _allocation;
+
+		ImageBuffer();
+		~ImageBuffer();
+	};
 }

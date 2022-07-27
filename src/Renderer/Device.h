@@ -1,6 +1,6 @@
 #pragma once
 #include "VK_HEADER.h"
-#include "MeshBuffer.h"
+#include "Buffer.h"
 
 namespace LearnVulkan {
 	class Device {

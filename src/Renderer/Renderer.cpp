@@ -52,7 +52,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(Pipeline& pipeline, VertexBuffer& vBuffer, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num)
+	void Renderer::Draw(VertexBuffer& vBuffer, VkPipeline& pipeline, VkPipelineLayout& pipelineLayout, glm::mat4& model, uint32_t& vertice_num)
 	{
 		sync.sync_gpu();
 
@@ -63,7 +63,7 @@ namespace LearnVulkan {
 
 		// rendering commands
 		// bind pipeline
-		pipeline.bind(commandBuffer._mainCommandBuffer, selectedPipelineIndex);
+		commandBuffer.bind(pipeline);
 
 		// bind the mesh vertex buffer with offset 0
 		VkDeviceSize offset = 0;
@@ -73,7 +73,7 @@ namespace LearnVulkan {
 		// calculate mvp matrix
 		MeshPushConstants constants;
 		constants.mvp = Renderer::projection_view * model;
-		pipeline.upload_pushConstants(commandBuffer._mainCommandBuffer, &constants);
+		upload_pushConstants(commandBuffer._mainCommandBuffer, pipelineLayout, &constants);
 
 		// draw
 		vkCmdDraw(commandBuffer._mainCommandBuffer, vertice_num, 1, 0, 0);
@@ -113,6 +113,15 @@ namespace LearnVulkan {
 		presentInfo.pImageIndices = &swapChain.swapchainImageIndex;
 
 		device.present(presentInfo);
+	}
+
+	void Renderer::upload_pushConstants(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const void* data)
+	{
+		uint32_t offset = 0;
+		// upload the matrix to the GPU via push constants
+		uint32_t size = sizeof(MeshPushConstants);
+		vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, data);
+		// offset += size;
 	}
 
 	void Renderer::setViewTransform(glm::mat4& view, glm::mat4& projection)

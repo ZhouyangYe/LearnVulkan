@@ -2,27 +2,33 @@
 
 namespace LearnVulkan {
 	// triangle
+	VertexBuffer GameState::Triangle::buffer;
 	std::vector<uint32_t> GameState::Triangle::pipelines;
 	uint32_t GameState::Triangle::vertice_num = 3;
-	uint32_t GameState::Triangle::selectedIndex = 0;
-	uint32_t GameState::Triangle::selectedPipelineIndex;
+	VkPipelineLayout GameState::Triangle::pipelineLayout;
+	VkPipeline GameState::Triangle::pipeline;
+	uint32_t GameState::Triangle::selectedPipelineIndex = 0;
 	void GameState::Triangle::setSelectedIndex(uint32_t index)
 	{
-		selectedIndex = index;
-		selectedPipelineIndex = pipelines[index];
+		selectedPipelineIndex = index;
+		pipeline = AppState::pipeline.pipelines[Triangle::pipelines[index]];
 	}
-	VertexBuffer GameState::Triangle::buffer;
+
 	GameState::Triangle GameState::triangle;
 
 	// monkey
 	VertexBuffer GameState::Monkey::buffer;
-	uint32_t GameState::Monkey::selectedPipelineIndex = 0;
+	VkPipelineLayout GameState::Monkey::pipelineLayout;
+	VkPipeline GameState::Monkey::pipeline;
+	std::vector<AppState::PosColorNormalVertex> GameState::Monkey::vertices;
+
 	GameState::Monkey GameState::monkey;
+	GameState::Monkey GameState::monkey2({0.f, -6.0f, 0.f});
 
 
 	void GameState::Init()
 	{
-		// triangle
+		// set up triangle data
 		std::vector<AppState::PosColorNormalVertex> vertices;
 		vertices.resize(3);
 		// vertex positions
@@ -39,16 +45,24 @@ namespace LearnVulkan {
 
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);
-		Triangle::selectedPipelineIndex = Triangle::pipelines[0];
+		Triangle::pipeline = AppState::pipeline.pipelines[0];
+		Triangle::pipelineLayout = AppState::pipeline.layouts[0];
 
 
-		// monkey
-		std::vector<ModelTools::Mesh> mesh = ModelTools::loadModel(fmt::format("{0}\\{1}", RESOURCE_FOLDER, "models\\monkey_smooth.obj"));
-		for (auto iter = mesh.begin(); iter != mesh.end(); ++iter) {
-			monkey.vertices.emplace_back(iter->position, iter->normal, iter->normal);
+		// set up monkey data
+		try {
+			Monkey::pipeline = AppState::pipeline.pipelines[0];
+			Monkey::pipelineLayout = AppState::pipeline.layouts[0];
+			std::vector<ModelTools::Mesh> mesh = ModelTools::loadModel(fmt::format("{0}\\{1}", RESOURCE_FOLDER, "models\\monkey_smooth.obj"));
+			for (auto iter = mesh.begin(); iter != mesh.end(); ++iter) {
+				Monkey::vertices.emplace_back(iter->position, iter->normal, iter->normal);
+			}
+
+			AppState::renderer.device.upload_mesh(Monkey::buffer, Monkey::vertices.data(), Monkey::vertices.size() * sizeof(AppState::PosColorNormalVertex));
 		}
-
-		AppState::renderer.device.upload_mesh(Monkey::buffer, monkey.vertices.data(), monkey.vertices.size() * sizeof(AppState::PosColorNormalVertex));
+		catch (Error err) {
+			Logger::console->error(err.desc);
+		}
 	}
 
 	void GameState::Destroy()

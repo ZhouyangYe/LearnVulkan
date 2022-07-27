@@ -6,7 +6,7 @@
 #include "Synchronization.h"
 #include "Pipeline.h"
 #include "VertexLayout.h"
-#include "MeshBuffer.h"
+#include "Buffer.h"
 
 namespace LearnVulkan {
 	class Renderer {
@@ -38,8 +38,9 @@ namespace LearnVulkan {
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw(Pipeline& pipeline, VertexBuffer& vBuffer, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num);
+		void Draw(VertexBuffer& vBuffer, VkPipeline& pipeline, VkPipelineLayout& pipelineLayout, glm::mat4& model, uint32_t& vertice_num);
 
+		void upload_pushConstants(VkCommandBuffer& cmd, VkPipelineLayout& pipelineLayout, const void* data);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
 		static glm::mat4 projection_view;

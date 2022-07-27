@@ -21,6 +21,8 @@ namespace LearnVulkan {
 		void end_command();
 		void begin_renderPass(VkSwapchainKHR& swapChain, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers);
 		void end_renderPass();
+
+		void bind(VkPipeline& pipeline);
 	private:
 		Device* device;
 		VkClearColorValue clearColor;

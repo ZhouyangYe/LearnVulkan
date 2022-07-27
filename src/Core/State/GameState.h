@@ -8,9 +8,12 @@ namespace LearnVulkan {
 		struct Triangle {
 			static VertexBuffer buffer;
 			static uint32_t vertice_num;
-			static uint32_t selectedIndex;
+			static VkPipelineLayout pipelineLayout;
+			static VkPipeline pipeline;
+
 			static uint32_t selectedPipelineIndex;
 			static std::vector<uint32_t> pipelines;
+
 			glm::vec3 coord{ 0.0f, 1.0f, 0.0f };
 
 			static void setSelectedIndex(uint32_t index);
@@ -19,11 +22,14 @@ namespace LearnVulkan {
 
 		struct Monkey {
 			static VertexBuffer buffer;
-			static uint32_t selectedPipelineIndex;
+			static VkPipelineLayout pipelineLayout;
+			static VkPipeline pipeline;
+			static std::vector<AppState::PosColorNormalVertex> vertices;
+
 			glm::vec3 coord{ 0.0f, 6.0f, 0.0f };
-			std::vector<AppState::PosColorNormalVertex> vertices;
 		};
 		static Monkey monkey;
+		static Monkey monkey2;
 
 		static void Init();
 

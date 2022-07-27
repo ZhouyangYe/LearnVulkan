@@ -13,6 +13,6 @@ namespace LearnVulkan {
 		_frameNumber++;
 
 		uint32_t vertice_num = GameState::monkey.vertices.size();
-		AppState::renderer.Draw(AppState::pipeline, GameState::Monkey::buffer, GameState::Monkey::selectedPipelineIndex, model, vertice_num);
+		AppState::renderer.Draw(GameState::monkey.buffer, GameState::monkey.pipeline, GameState::monkey.pipelineLayout, model, vertice_num);
 	}
 }

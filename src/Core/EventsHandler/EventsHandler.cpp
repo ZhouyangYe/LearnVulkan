@@ -9,7 +9,7 @@ namespace LearnVulkan
 			switch(event.keyCode) {
 				case Key::Y:
 					if (event.action == KeyPressEvent::ACTION::KEY_DOWN) {
-						GameState::Triangle::setSelectedIndex((GameState::Triangle::selectedIndex + 1) % 2);
+						GameState::Triangle::setSelectedIndex((GameState::Triangle::selectedPipelineIndex + 1) % 2);
 					}
 					break;
 				case Key::H:
