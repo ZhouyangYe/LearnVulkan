@@ -25,8 +25,8 @@ namespace LearnVulkan {
 		void Destroy();
 
 		void init_swapchain();
-		void init_framebuffers(VkRenderPass& renderPass);
-		void request_imgIndex(VkSemaphore& semaphore);
+		void init_framebuffers(VkRenderPass renderPass);
+		void request_imgIndex(VkSemaphore semaphore);
 	private:
 		Device* device;
 

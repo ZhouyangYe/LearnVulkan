@@ -27,7 +27,7 @@ namespace LearnVulkan {
 		VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &_mainCommandBuffer));
 	}
 
-	void CommandBuffer::init_renderpass(float clearColor[4], VkFormat& swapchainImageFormat, VkFormat& depthFormat)
+	void CommandBuffer::init_renderpass(float clearColor[4], VkFormat swapchainImageFormat, VkFormat depthFormat)
 	{
 		this->clearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
 
@@ -129,7 +129,7 @@ namespace LearnVulkan {
 		VK_CHECK(vkEndCommandBuffer(_mainCommandBuffer));
 	}
 
-	void CommandBuffer::begin_renderPass(VkSwapchainKHR& swapChain, uint32_t& swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers)
+	void CommandBuffer::begin_renderPass(VkSwapchainKHR swapChain, uint32_t swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers)
 	{
 		// make a clear-color from frame number. This will flash with a 120 frame period.
 		VkClearValue clearValue;

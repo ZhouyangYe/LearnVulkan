@@ -111,7 +111,7 @@ namespace LearnVulkan {
 		vmaDestroyBuffer(_allocator, buffer._buffer, buffer._allocation);
 	}
 
-	void Device::submit(VkSubmitInfo& submitInfo, VkFence& renderFence)
+	void Device::submit(VkSubmitInfo& submitInfo, VkFence renderFence)
 	{
 		// submit command buffer to the queue and execute it.
 		// _renderFence will now block until the graphic commands finish execution

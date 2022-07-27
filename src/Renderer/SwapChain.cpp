@@ -68,7 +68,7 @@ namespace LearnVulkan {
 		VK_CHECK(vkCreateImageView(device->_device, &dview_info, nullptr, &_depthImageView));
 	}
 
-	void SwapChain::init_framebuffers(VkRenderPass& renderPass)
+	void SwapChain::init_framebuffers(VkRenderPass renderPass)
 	{
 		//create the framebuffers for the swapchain images. This will connect the render-pass to the images for rendering
 		VkFramebufferCreateInfo fb_info = vkinit::framebuffer_create_info(renderPass, device->_windowExtent);
@@ -88,7 +88,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void SwapChain::request_imgIndex(VkSemaphore& semaphore)
+	void SwapChain::request_imgIndex(VkSemaphore semaphore)
 	{
 		//request image from the swapchain
 		VK_CHECK(vkAcquireNextImageKHR(device->_device, _swapchain, 1000000000, semaphore, nullptr, &swapchainImageIndex));
