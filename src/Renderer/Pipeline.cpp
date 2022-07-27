@@ -43,6 +43,7 @@ namespace LearnVulkan {
 		pipelineInfo.renderPass = pass;
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+		pipelineInfo.pDepthStencilState = &_depthStencil;
 
 		// its easy to error out on create graphics pipeline, so we handle it a bit better than the common VK_CHECK case
 		VkPipeline newPipeline;
@@ -64,13 +65,13 @@ namespace LearnVulkan {
 
 	Pipeline& Pipeline::add_constant(uint32_t size)
 	{
-		//setup push constants
+		// setup push constants
 		VkPushConstantRange push_constant;
-		//this push constant range starts at the beginning
+		// this push constant range starts at the beginning
 		push_constant.offset = constant_offset;
-		//this push constant range takes up the size of a MeshPushConstants struct
+		// this push constant range takes up the size of a MeshPushConstants struct
 		push_constant.size = size;
-		//this push constant range is accessible only in the vertex shader
+		// this push constant range is accessible only in the vertex shader
 		push_constant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 		constants.push_back(push_constant);
@@ -160,6 +161,9 @@ namespace LearnVulkan {
 
 		// a single blend attachment with no blending and writing to RGBA
 		pipelineBuilder._colorBlendAttachment = vkinit::color_blend_attachment_state();
+
+		// default depthtesting
+		pipelineBuilder._depthStencil = vkinit::depth_stencil_create_info(true, true, VK_COMPARE_OP_LESS_OR_EQUAL);
 
 		layouts.push_back(pipelineLayout);
 

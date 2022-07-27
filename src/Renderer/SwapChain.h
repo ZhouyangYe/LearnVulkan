@@ -2,12 +2,18 @@
 #include "VK_HEADER.h"
 #include "Device.h"
 #include "Helper.h"
+#include "Buffer.h"
 
 namespace LearnVulkan {
 	class SwapChain {
 	public:
 		uint32_t swapchainImageIndex;
 		VkFormat _swapchainImageFormat;
+
+		VkImageView _depthImageView;
+		ImageBuffer _depthImage;
+		//the format for the depth image
+		VkFormat _depthFormat;
 
 		VkSwapchainKHR _swapchain;
 

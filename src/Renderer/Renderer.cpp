@@ -19,7 +19,7 @@ namespace LearnVulkan {
 
 		commandBuffer.init_commands();
 
-		commandBuffer.init_renderpass(props.clearColor, swapChain._swapchainImageFormat);
+		commandBuffer.init_renderpass(props.clearColor, swapChain._swapchainImageFormat, swapChain._depthFormat);
 
 		swapChain.init_framebuffers(commandBuffer._renderPass);
 

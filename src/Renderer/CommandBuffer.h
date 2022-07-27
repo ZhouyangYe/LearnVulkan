@@ -15,7 +15,7 @@ namespace LearnVulkan {
 		void Destroy();
 
 		void init_commands();
-		void init_renderpass(float clearColor[4], VkFormat& swapchainImageFormat);
+		void init_renderpass(float clearColor[4], VkFormat& swapchainImageFormat, VkFormat& depthFormat);
 		
 		void begin_command();
 		void end_command();
