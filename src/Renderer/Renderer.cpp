@@ -9,11 +9,6 @@ namespace LearnVulkan {
 
 	Renderer::~Renderer() {}
 
-	void Renderer::initPipeline(Pipeline& pipeline, VertexLayout& layout)
-	{
-		pipeline.init_pipeline(&device, &commandBuffer._renderPass, layout);
-	}
-
 	void Renderer::Init(RendererProps& props)
 	{
 		device.init_vulkan(props.window);

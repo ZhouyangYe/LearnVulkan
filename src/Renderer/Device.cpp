@@ -87,7 +87,6 @@ namespace LearnVulkan {
 		//this buffer is going to be used as a Vertex Buffer
 		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 
-
 		//let the VMA library know that this data should be writeable by CPU, but also readable by GPU
 		VmaAllocationCreateInfo vmaallocInfo = {};
 		vmaallocInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;

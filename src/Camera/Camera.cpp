@@ -70,7 +70,6 @@ namespace LearnVulkan
 		forward = param.forward;
 		up = param.up;
 		right = glm::normalize(glm::cross(forward, up));
-		updateCam();
 		proj = glm::perspective(glm::radians(75.0f), float(param.windowSize.width) / float(param.windowSize.height), 0.1f, param.view_distance);
 		proj[1][1] *= -1;
 		view = glm::lookAt(cam, eye + forward, up);

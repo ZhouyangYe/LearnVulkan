@@ -30,7 +30,7 @@ namespace LearnVulkan {
 	public:
 		std::vector<VkPipeline> pipelines;
 
-		Pipeline();
+		Pipeline(Device* device, VkRenderPass* renderPass);
 		~Pipeline();
 
 		void bind(VkCommandBuffer& cmd, uint32_t& selectedPipelineIndex);
@@ -40,7 +40,7 @@ namespace LearnVulkan {
 		Pipeline& add_constant(uint32_t size);
 
 		VkShaderModule load_shader_module(const char* filePath);
-		void init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout);
+		void init_pipeline(VertexLayout& layout);
 		void Destroy();
 		void add_pipeline(std::string vertexShaderName, std::string fragmentShaderName);
 	private:

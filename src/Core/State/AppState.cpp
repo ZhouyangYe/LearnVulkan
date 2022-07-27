@@ -3,7 +3,7 @@
 namespace LearnVulkan {
 	Window AppState::window;
 	Renderer AppState::renderer;
-	Pipeline AppState::pipeline;
+	Pipeline AppState::pipeline(&AppState::renderer.device, &AppState::renderer.commandBuffer._renderPass);
 	Cursor AppState::cursor(&AppState::window);
 	Time AppState::time(&AppState::window);
 	Camera AppState::camera(&AppState::time);
@@ -25,7 +25,7 @@ namespace LearnVulkan {
 
 		// create pipelines
 		PosColorNormalVertex::Init();
-		renderer.initPipeline(pipeline, PosColorNormalVertex::layout);
+		pipeline.init_pipeline(PosColorNormalVertex::layout);
 		pipeline.add_pipeline("vert1", "frag1");
 		pipeline.add_pipeline("vert2", "frag2");
 	}

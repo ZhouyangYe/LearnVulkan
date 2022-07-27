@@ -56,7 +56,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	Pipeline::Pipeline() {
+	Pipeline::Pipeline(Device* device, VkRenderPass* renderPass) : device(device), _renderPass(renderPass) {
 		add_constant(sizeof(MeshPushConstants));
 	}
 
@@ -122,15 +122,13 @@ namespace LearnVulkan {
 		return shaderModule;
 	}
 
-	void Pipeline::init_pipeline(Device* device, VkRenderPass* renderPass, VertexLayout& layout)
+	void Pipeline::init_pipeline(VertexLayout& layout)
 	{
-		this->device = device;
-		_renderPass = renderPass;
 
 		pipelineBuilder = {};
 
 		// build the pipeline layout that controls the inputs/outputs of the shader
-		// add push_constants, for instance: MVP
+		// add default push_constants, for instance: MVP
 		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants);
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
@@ -193,15 +191,6 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Pipeline::Destroy()
-	{
-		for (auto iter = pipelines.begin(); iter != pipelines.end(); ++iter) {
-			vkDestroyPipeline(device->_device, *iter, nullptr);
-		}
-
-		vkDestroyPipelineLayout(device->_device, pipelineLayout, nullptr);
-	}
-
 	void Pipeline::bind(VkCommandBuffer& cmd, uint32_t& selectedPipelineIndex)
 	{
 		vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[selectedPipelineIndex]);
@@ -210,9 +199,18 @@ namespace LearnVulkan {
 	void Pipeline::upload_pushConstants(VkCommandBuffer& cmd, const void* data)
 	{
 		uint32_t offset = 0;
-		//upload the matrix to the GPU via push constants
+		// upload the matrix to the GPU via push constants
 		uint32_t size = sizeof(MeshPushConstants);
 		vkCmdPushConstants(cmd, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, offset, size, data);
 		offset += size;
+	}
+
+	void Pipeline::Destroy()
+	{
+		for (auto iter = pipelines.begin(); iter != pipelines.end(); ++iter) {
+			vkDestroyPipeline(device->_device, *iter, nullptr);
+		}
+
+		vkDestroyPipelineLayout(device->_device, pipelineLayout, nullptr);
 	}
 }

@@ -40,8 +40,6 @@ namespace LearnVulkan {
 		// draw loop
 		void Draw(Pipeline& pipeline, VertexBuffer& vBuffer, uint32_t& selectedPipelineIndex, glm::mat4& model, uint32_t& vertice_num);
 
-		void initPipeline(Pipeline& pipeline, VertexLayout& layout);
-
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
 		static glm::mat4 projection_view;

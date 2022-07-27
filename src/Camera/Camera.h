@@ -24,7 +24,7 @@ namespace LearnVulkan
 			float view_distance;
 			glm::vec3 spawnLocation;
 			float zoom = 0.f;
-			glm::vec3 forward{ 1.0f, 0.0f, 0.0f };
+			glm::vec3 forward{ 0.0f, 1.0f, 0.0f };
 			glm::vec3 up{ 0.0f, 0.0f, 1.0f };
 		};
 		const glm::vec3 WORLD_UP;
