@@ -19,7 +19,6 @@ namespace LearnVulkan {
 
 	void World::Update()
 	{
-		//model rotation
 		Renderer::Renderable& monkey1 = objects[0];
 		Renderer::Renderable& monkey2 = objects[1];
 		monkey1.model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(_frameNumber * 0.4f), { 0.f, 1.0f, 0.f });
