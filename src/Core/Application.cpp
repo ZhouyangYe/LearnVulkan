@@ -49,6 +49,7 @@ namespace LearnVulkan {
 			AppState::camera.Begin();
 
 			world.Update();
+			AppState::renderer.Draw();
 
 			if (AppState::cursor.hideCursor) AppState::cursor.reset();
 

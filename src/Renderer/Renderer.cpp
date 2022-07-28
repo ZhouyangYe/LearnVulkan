@@ -85,7 +85,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	void Renderer::Draw(std::vector<Renderable>& objects)
+	void Renderer::Draw()
 	{
 		sync.sync_gpu();
 
@@ -94,7 +94,7 @@ namespace LearnVulkan {
 		swapChain.request_imgIndex(sync._presentSemaphore);
 		commandBuffer.begin_renderPass(swapChain._swapchain, swapChain.swapchainImageIndex, swapChain._framebuffers);
 
-		draw_renderables(commandBuffer._mainCommandBuffer, objects.data(), objects.size());
+		draw_renderables(commandBuffer._mainCommandBuffer, renderable_objects.data(), renderable_objects.size());
 
 		commandBuffer.end_renderPass();
 
@@ -131,6 +131,8 @@ namespace LearnVulkan {
 		presentInfo.pImageIndices = &swapChain.swapchainImageIndex;
 
 		device.present(presentInfo);
+
+		renderable_objects.clear();
 	}
 
 	void Renderer::upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data)
@@ -145,5 +147,11 @@ namespace LearnVulkan {
 	void Renderer::setViewTransform(glm::mat4& view, glm::mat4& projection)
 	{
 		projection_view = projection * view;
+	}
+
+	void Renderer::submit(VertexBuffer buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model)
+	{
+		// TODO: design a data structure to optimize this
+		renderable_objects.emplace_back(buffer, pipelineLayout, pipeline, vertice_num, model);
 	}
 }

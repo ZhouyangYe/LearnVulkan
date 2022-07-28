@@ -46,12 +46,16 @@ namespace LearnVulkan {
 		// shuts down the engine
 		void Destroy();
 		// draw loop
-		void Draw(std::vector<Renderable>& objects);
+		void Draw();
 
 		void upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data);
+		void submit(VertexBuffer buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
 		static glm::mat4 projection_view;
+
+		std::vector<Renderable> renderable_objects;
+
 		void draw_renderables(VkCommandBuffer cmd, Renderable* first, int count);
 	};
 }

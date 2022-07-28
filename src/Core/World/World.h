@@ -13,6 +13,5 @@ namespace LearnVulkan {
 		void Destroy();
 	private:
 		uint32_t _frameNumber{ 0 };
-		std::vector<Renderer::Renderable> objects;
 	};
 }
