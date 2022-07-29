@@ -54,6 +54,7 @@ namespace LearnVulkan {
 	private:
 		static glm::mat4 projection_view;
 
+		uint32_t frameIndex{ 0 };
 		std::vector<Renderable> renderable_objects;
 
 		void draw_renderables(VkCommandBuffer cmd, Renderable* first, int count);

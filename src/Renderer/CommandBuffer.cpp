@@ -8,23 +8,30 @@ namespace LearnVulkan {
 
 	void CommandBuffer::Destroy()
 	{
-		vkDestroyCommandPool(device->_device, _commandPool, nullptr);
+		for (auto iter = _commandPools.begin(); iter != _commandPools.end(); ++iter) {
+			vkDestroyCommandPool(device->_device, *iter, nullptr);
+		}
 
 		vkDestroyRenderPass(device->_device, _renderPass, nullptr);
 	}
 
-	void CommandBuffer::init_commands()
+	void CommandBuffer::init_commands(uint32_t num)
 	{
+		_commandBuffers.resize(num);
+		_commandPools.resize(num);
+
 		// create a command pool for commands submitted to the graphics queue.
 		// we also want the pool to allow for resetting of individual command buffers
 		VkCommandPoolCreateInfo commandPoolInfo = vkinit::command_pool_create_info(device->_graphicsQueueFamily, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 
-		VK_CHECK(vkCreateCommandPool(device->_device, &commandPoolInfo, nullptr, &_commandPool));
+		for (int i = 0; i < num; i++) {
+			VK_CHECK(vkCreateCommandPool(device->_device, &commandPoolInfo, nullptr, &_commandPools[i]));
 
-		// allocate the default command buffer that we will use for rendering
-		VkCommandBufferAllocateInfo cmdAllocInfo = vkinit::command_buffer_allocate_info(_commandPool, 1);
+			//allocate the default command buffer that we will use for rendering
+			VkCommandBufferAllocateInfo cmdAllocInfo = vkinit::command_buffer_allocate_info(_commandPools[i], 1);
 
-		VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &_mainCommandBuffer));
+			VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &_commandBuffers[i]));
+		}
 	}
 
 	void CommandBuffer::init_renderpass(float clearColor[4], VkFormat swapchainImageFormat, VkFormat depthFormat)
@@ -160,5 +167,10 @@ namespace LearnVulkan {
 	void CommandBuffer::bind(VkPipeline& pipeline)
 	{
 		vkCmdBindPipeline(_mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	}
+
+	void CommandBuffer::setCommand(uint32_t index)
+	{
+		_mainCommandBuffer = _commandBuffers[index];
 	}
 }

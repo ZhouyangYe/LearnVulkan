@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#define FRAME_OVERLAP 2
+
 namespace LearnVulkan {
 	glm::mat4 Renderer::projection_view;
 
@@ -13,11 +15,11 @@ namespace LearnVulkan {
 	{
 		device.init_vulkan(props.window);
 
-		sync.init_sync_structures();
+		sync.init_sync_structures(FRAME_OVERLAP);
 
 		swapChain.init_swapchain();
 
-		commandBuffer.init_commands();
+		commandBuffer.init_commands(FRAME_OVERLAP);
 
 		commandBuffer.init_renderpass(props.clearColor, swapChain._swapchainImageFormat, swapChain._depthFormat);
 
@@ -87,6 +89,9 @@ namespace LearnVulkan {
 
 	void Renderer::Draw()
 	{
+		commandBuffer.setCommand(frameIndex);
+		sync.setLockSet(frameIndex);
+
 		sync.sync_gpu();
 
 		commandBuffer.begin_command();
@@ -132,7 +137,9 @@ namespace LearnVulkan {
 
 		device.present(presentInfo);
 
+		// reset
 		renderable_objects.clear();
+		frameIndex = (frameIndex + 1) % FRAME_OVERLAP;
 	}
 
 	void Renderer::upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data)

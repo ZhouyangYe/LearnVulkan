@@ -7,14 +7,17 @@ namespace LearnVulkan {
 	class CommandBuffer {
 	public:
 		VkRenderPass _renderPass;
+		std::vector<VkCommandBuffer> _commandBuffers;
 		VkCommandBuffer _mainCommandBuffer;
+		std::vector<VkCommandPool> _commandPools;
+		VkCommandPool _commandPool;
 
 		CommandBuffer(Device* device);
 		~CommandBuffer();
 
 		void Destroy();
 
-		void init_commands();
+		void init_commands(uint32_t num);
 		void init_renderpass(float clearColor[4], VkFormat swapchainImageFormat, VkFormat depthFormat);
 		
 		void begin_command();
@@ -23,10 +26,10 @@ namespace LearnVulkan {
 		void end_renderPass();
 
 		void bind(VkPipeline& pipeline);
+
+		void setCommand(uint32_t index);
 	private:
 		Device* device;
 		VkClearColorValue clearColor;
-
-		VkCommandPool _commandPool;
 	};
 }
