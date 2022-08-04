@@ -8,7 +8,7 @@
 namespace LearnVulkan {
 	struct MeshPushConstants {
 		glm::vec4 data;
-		glm::mat4 mvp;
+		glm::mat4 renderMatrix;
 	};
 
 	class PipelineBuilder {
@@ -39,7 +39,7 @@ namespace LearnVulkan {
 		Pipeline& add_constant(uint32_t size);
 
 		VkShaderModule load_shader_module(const char* filePath);
-		Pipeline& init_layout();
+		Pipeline& init_layout(std::vector<VkDescriptorSetLayout>& descriptorLayouts);
 		Pipeline& init_vertex_layout(VertexLayout& layout);
 		Pipeline& add_pipeline(std::string shaderName);
 

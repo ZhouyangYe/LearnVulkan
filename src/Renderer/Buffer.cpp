@@ -1,8 +1,8 @@
 #include "Buffer.h"
 
 namespace LearnVulkan {
-	VertexBuffer::VertexBuffer() {}
-	VertexBuffer::~VertexBuffer() {}
+	Buffer::Buffer() {}
+	Buffer::~Buffer() {}
 
 	ImageBuffer::ImageBuffer() {}
 	ImageBuffer::~ImageBuffer() {}

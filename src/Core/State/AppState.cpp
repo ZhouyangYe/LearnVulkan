@@ -27,8 +27,8 @@ namespace LearnVulkan {
 		PosColorNormalVertex::Init();
 		pipeline
 			// first layout
-			.init_layout()                                         // layouts 0
-			.init_vertex_layout(PosColorNormalVertex::layout)      // vertex_layouts 0
+			.init_layout(renderer.descriptor.uniform_layouts)      // layouts 0
+			.init_vertex_layout(PosColorNormalVertex::layout)
 			.add_pipeline("shader1")                               // pipelines 0
 			.add_pipeline("shader2");                              // pipelines 1
 	}

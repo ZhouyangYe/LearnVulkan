@@ -6,7 +6,7 @@ namespace LearnVulkan {
 	class GameState {
 	public:
 		struct Triangle {
-			static VertexBuffer buffer;
+			static Buffer buffer;
 			static VkPipelineLayout pipelineLayout;
 			static VkPipeline pipeline;
 			static std::vector<AppState::PosColorNormalVertex> vertices;
@@ -18,7 +18,7 @@ namespace LearnVulkan {
 		};
 
 		struct Monkey {
-			static VertexBuffer buffer;
+			static Buffer buffer;
 			static VkPipelineLayout pipelineLayout;
 			static VkPipeline pipeline;
 			static std::vector<AppState::PosColorNormalVertex> vertices;

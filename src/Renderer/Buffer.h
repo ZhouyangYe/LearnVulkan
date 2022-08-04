@@ -2,13 +2,13 @@
 #include "VK_HEADER.h"
 
 namespace LearnVulkan {
-	class VertexBuffer {
+	class Buffer {
 	public:
 		VkBuffer _buffer;
 		VmaAllocation _allocation;
 
-		VertexBuffer();
-		~VertexBuffer();
+		Buffer();
+		~Buffer();
 	};
 
 	class ImageBuffer {

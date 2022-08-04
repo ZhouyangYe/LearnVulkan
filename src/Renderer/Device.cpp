@@ -69,7 +69,7 @@ namespace LearnVulkan {
 
 		_graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
 
-		//initialize the memory allocator
+		// initialize the memory allocator
 		VmaAllocatorCreateInfo allocatorInfo = {};
 		allocatorInfo.physicalDevice = _chosenGPU;
 		allocatorInfo.device = _device;
@@ -77,36 +77,49 @@ namespace LearnVulkan {
 		vmaCreateAllocator(&allocatorInfo, &_allocator);
 	}
 
-	void Device::upload_mesh(VertexBuffer& buffer, const void* vertices, uint64_t size)
+	Buffer Device::create_buffer(uint64_t size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
 	{
-		//allocate vertex buffer
+		// allocate vertex buffer
 		VkBufferCreateInfo bufferInfo = {};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		//this is the total size, in bytes, of the buffer we are allocating
+		// this is the total size, in bytes, of the buffer we are allocating
 		bufferInfo.size = size;
-		//this buffer is going to be used as a Vertex Buffer
-		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		// this buffer is going to be used as a Vertex Buffer
+		bufferInfo.usage = usage;
 
-		//let the VMA library know that this data should be writeable by CPU, but also readable by GPU
+		// let the VMA library know that this data should be writeable by CPU, but also readable by GPU
 		VmaAllocationCreateInfo vmaallocInfo = {};
-		vmaallocInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+		vmaallocInfo.usage = memoryUsage;
 
-		//allocate the buffer
+		Buffer buffer;
+
+		// allocate the buffer
 		VK_CHECK(vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo,
 			&buffer._buffer,
 			&buffer._allocation,
 			nullptr));
 
-		//copy vertex data
+		return buffer;
+	}
+
+	void Device::upload_data(Buffer& buffer, const void* d, uint64_t size)
+	{
+		// copy data
 		void* data;
 		vmaMapMemory(_allocator, buffer._allocation, &data);
 
-		memcpy(data, vertices, size);
+		memcpy(data, d, size);
 
 		vmaUnmapMemory(_allocator, buffer._allocation);
 	}
 
-	void Device::destroy_buffer(VertexBuffer& buffer)
+	void Device::upload_vertex_data(Buffer& buffer, const void* data, uint64_t size)
+	{
+		buffer = create_buffer(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+		upload_data(buffer, data, size);
+	}
+
+	void Device::destroy_buffer(Buffer& buffer)
 	{
 		vmaDestroyBuffer(_allocator, buffer._buffer, buffer._allocation);
 	}

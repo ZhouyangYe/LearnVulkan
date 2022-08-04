@@ -123,7 +123,7 @@ namespace LearnVulkan {
 		return shaderModule;
 	}
 
-	Pipeline& Pipeline::init_layout()
+	Pipeline& Pipeline::init_layout(std::vector<VkDescriptorSetLayout>& descriptorLayouts)
 	{
 		pipelineBuilder = {};
 
@@ -131,11 +131,11 @@ namespace LearnVulkan {
 
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// add default push_constants, for instance: MVP
-		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants);
+		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants, descriptorLayouts);
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 
-		// use the triangle layout we created
+		// use the layout we created
 		pipelineBuilder._pipelineLayout = pipelineLayout;
 
 		// input assembly is the configuration for drawing triangle lists, strips, or individual points.

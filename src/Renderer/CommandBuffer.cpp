@@ -164,9 +164,13 @@ namespace LearnVulkan {
 		vkCmdEndRenderPass(_mainCommandBuffer);
 	}
 
-	void CommandBuffer::bind(VkPipeline& pipeline)
+	void CommandBuffer::bind(VkPipeline pipeline, VkPipelineLayout pipelineLayout, std::vector<VkDescriptorSet>& descriptorSets)
 	{
 		vkCmdBindPipeline(_mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+		//bind the descriptor set when changing pipeline
+		if (descriptorSets.size()) {
+			vkCmdBindDescriptorSets(_mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 0, nullptr);
+		}
 	}
 
 	void CommandBuffer::setCommand(uint32_t index)

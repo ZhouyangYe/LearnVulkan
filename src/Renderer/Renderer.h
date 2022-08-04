@@ -7,16 +7,23 @@
 #include "Pipeline.h"
 #include "VertexLayout.h"
 #include "Buffer.h"
+#include "Descriptor.h"
 
 namespace LearnVulkan {
 	class Renderer {
 	public:
 		struct Renderable {
-			VertexBuffer buffer;
+			Buffer vertex_buffer;
 			VkPipelineLayout pipelineLayout;
 			VkPipeline pipeline;
 			uint32_t vertice_num;
 			glm::mat4 model;
+		};
+
+		struct CameraData {
+			glm::mat4 view;
+			glm::mat4 projection;
+			glm::mat4 projection_view;
 		};
 
 		struct RendererProps
@@ -36,6 +43,8 @@ namespace LearnVulkan {
 		SwapChain swapChain;
 		Synchronization sync;
 
+		Descriptor descriptor;
+
 		Renderer();
 		~Renderer();
 
@@ -49,10 +58,10 @@ namespace LearnVulkan {
 		void Draw();
 
 		void upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data);
-		void submit(VertexBuffer buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model);
+		void submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
-		static glm::mat4 projection_view;
+		static CameraData camData;
 
 		uint32_t frameIndex{ 0 };
 		std::vector<Renderable> renderable_objects;

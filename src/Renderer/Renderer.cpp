@@ -3,10 +3,10 @@
 #define FRAME_OVERLAP 2
 
 namespace LearnVulkan {
-	glm::mat4 Renderer::projection_view;
+	Renderer::CameraData Renderer::camData;
 
 	Renderer::Renderer()
-		: commandBuffer(&device), swapChain(&device), sync(&device)
+		: commandBuffer(&device), swapChain(&device), sync(&device), descriptor(&device)
 	{}
 
 	Renderer::~Renderer() {}
@@ -24,6 +24,8 @@ namespace LearnVulkan {
 		commandBuffer.init_renderpass(props.clearColor, swapChain._swapchainImageFormat, swapChain._depthFormat);
 
 		swapChain.init_framebuffers(commandBuffer._renderPass);
+
+		descriptor.init_uniforms(FRAME_OVERLAP, sizeof(CameraData));
 
 		// everything went fine
 		_isInitialized = true;
@@ -49,6 +51,9 @@ namespace LearnVulkan {
 			// destroy swap chain
 			swapChain.Destroy();
 
+			// destroy uniform
+			descriptor.Destroy();
+
 			// destroy device
 			device.Destroy();
 		}
@@ -58,31 +63,34 @@ namespace LearnVulkan {
 	{
 		VkPipeline lastPipeline = nullptr;
 		VkBuffer lastBuffer = nullptr;
+
+		descriptor.update_uniform_data(frameIndex, &camData, sizeof(CameraData));
+
 		for (int i = 0; i < count; i++)
 		{
 			Renderable& object = first[i];
 
-			//only bind the pipeline if it doesn't match with the already bound one
+			// only bind the pipeline if it doesn't match with the already bound one
 			if (object.pipeline != lastPipeline) {
-				commandBuffer.bind(object.pipeline);
+				commandBuffer.bind(object.pipeline, object.pipelineLayout, descriptor.uniform_descriptorSets[frameIndex]);
 				lastPipeline = object.pipeline;
 			}
 
-			//only bind the mesh if it's a different one from last bind
-			if (object.buffer._buffer != lastBuffer) {
-				//bind the mesh vertex buffer with offset 0
+			// only bind the mesh if it's a different one from last bind
+			if (object.vertex_buffer._buffer != lastBuffer) {
+				// bind the mesh vertex buffer with offset 0
 				VkDeviceSize offset = 0;
-				vkCmdBindVertexBuffers(cmd, 0, 1, &object.buffer._buffer, &offset);
-				lastBuffer = object.buffer._buffer;
+				vkCmdBindVertexBuffers(cmd, 0, 1, &object.vertex_buffer._buffer, &offset);
+				lastBuffer = object.vertex_buffer._buffer;
 			}
 
 			// upload push constants
 			MeshPushConstants constants;
 			// calculate mvp matrix
-			constants.mvp = Renderer::projection_view * object.model;
+			constants.renderMatrix = object.model;
 			upload_pushConstants(cmd, object.pipelineLayout, &constants);
 
-			//we can now draw
+			// we can now draw
 			vkCmdDraw(cmd, object.vertice_num, 1, 0, 0);
 		}
 	}
@@ -151,12 +159,14 @@ namespace LearnVulkan {
 		// offset += size;
 	}
 
-	void Renderer::setViewTransform(glm::mat4& view, glm::mat4& projection)
+	void Renderer::setViewTransform(glm::mat4& v, glm::mat4& p)
 	{
-		projection_view = projection * view;
+		camData.projection = p;
+		camData.view = v;
+		camData.projection_view = p * v;
 	}
 
-	void Renderer::submit(VertexBuffer buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model)
+	void Renderer::submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model)
 	{
 		// TODO: design a data structure to optimize this
 		renderable_objects.emplace_back(buffer, pipelineLayout, pipeline, vertice_num, model);

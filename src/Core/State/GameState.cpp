@@ -2,7 +2,7 @@
 
 namespace LearnVulkan {
 	// triangle
-	VertexBuffer GameState::Triangle::buffer;
+	Buffer GameState::Triangle::buffer;
 	VkPipelineLayout GameState::Triangle::pipelineLayout;
 	VkPipeline GameState::Triangle::pipeline;
 	std::vector<AppState::PosColorNormalVertex> GameState::Triangle::vertices;
@@ -15,7 +15,7 @@ namespace LearnVulkan {
 	}
 
 	// monkey
-	VertexBuffer GameState::Monkey::buffer;
+	Buffer GameState::Monkey::buffer;
 	VkPipelineLayout GameState::Monkey::pipelineLayout;
 	VkPipeline GameState::Monkey::pipeline;
 	std::vector<AppState::PosColorNormalVertex> GameState::Monkey::vertices;
@@ -35,7 +35,7 @@ namespace LearnVulkan {
 		Triangle::vertices[1].color = { 0.f, 1.f, 1.0f };
 		Triangle::vertices[2].color = { 0.f, 1.f, 1.0f };
 
-		AppState::renderer.device.upload_mesh(Triangle::buffer, Triangle::vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
+		AppState::renderer.device.upload_vertex_data(Triangle::buffer, Triangle::vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex));
 
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);
@@ -52,7 +52,7 @@ namespace LearnVulkan {
 				Monkey::vertices.emplace_back(iter->position, iter->normal, iter->normal);
 			}
 
-			AppState::renderer.device.upload_mesh(Monkey::buffer, Monkey::vertices.data(), Monkey::vertices.size() * sizeof(AppState::PosColorNormalVertex));
+			AppState::renderer.device.upload_vertex_data(Monkey::buffer, Monkey::vertices.data(), Monkey::vertices.size() * sizeof(AppState::PosColorNormalVertex));
 		}
 		catch (Error err) {
 			Logger::console->error(err.desc);

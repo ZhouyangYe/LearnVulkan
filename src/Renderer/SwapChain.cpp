@@ -74,7 +74,7 @@ namespace LearnVulkan {
 		VkFramebufferCreateInfo fb_info = vkinit::framebuffer_create_info(renderPass, device->_windowExtent);
 
 		const uint32_t swapchain_imagecount = _swapchainImages.size();
-		_framebuffers = std::vector<VkFramebuffer>(swapchain_imagecount);
+		_framebuffers.resize(swapchain_imagecount);
 
 		for (int i = 0; i < swapchain_imagecount; i++) {
 			VkImageView attachments[2];

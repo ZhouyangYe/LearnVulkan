@@ -34,7 +34,7 @@ namespace LearnVulkan {
 
 		VkPipelineColorBlendAttachmentState color_blend_attachment_state();
 
-		VkPipelineLayoutCreateInfo pipeline_layout_create_info(std::vector<VkPushConstantRange>& constants);
+		VkPipelineLayoutCreateInfo pipeline_layout_create_info(std::vector<VkPushConstantRange>& constants, std::vector<VkDescriptorSetLayout>& descriptorLayouts);
 
 		VkImageCreateInfo image_create_info(VkFormat format, VkImageUsageFlags usageFlags, VkExtent3D extent);
 
