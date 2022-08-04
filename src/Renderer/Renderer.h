@@ -26,6 +26,14 @@ namespace LearnVulkan {
 			glm::mat4 projection_view;
 		};
 
+		struct SceneData {
+			glm::vec4 fogColor; // w is for exponent
+			glm::vec4 fogDistances; //x for min, y for max, zw unused.
+			glm::vec4 ambientColor;
+			glm::vec4 sunlightDirection; //w for sun power
+			glm::vec4 sunlightColor;
+		};
+
 		struct RendererProps
 		{
 			Window* window;
@@ -35,6 +43,8 @@ namespace LearnVulkan {
 				: window(window), clearColor{ color[0], color[1], color[2], color[3] }
 			{}
 		};
+
+		static SceneData sceneData;
 
 		bool _isInitialized{ false };
 

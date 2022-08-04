@@ -8,16 +8,18 @@ namespace LearnVulkan {
 
 	Descriptor::~Descriptor() {}
 
-	void Descriptor::init_uniforms(uint32_t frameNum, uint64_t size)
+	void Descriptor::init_uniforms(uint32_t frameNum, uint64_t vertex_size, uint64_t fragment_size)
 	{
-		uniform_buffers.resize(frameNum);
-		uniform_descriptorSets.resize(frameNum);
-		add_uniform_layout().add_uniform_descriptor_set(frameNum, size);
+		_cameraUniformBuffers.reserve(frameNum);
+		_uniformDescriptorSets.reserve(frameNum);
+		add_uniform_layout().add_uniform_descriptor_set(frameNum, vertex_size, fragment_size);
 	}
 
-	void Descriptor::update_uniform_data(uint32_t frameIndex, const void* data, uint64_t size)
+	void Descriptor::update_uniform_data(uint32_t frameIndex, GPUData& vertex_uniform, GPUData& fragment_uniform)
 	{
-		device->upload_data(uniform_buffers[frameIndex][0], data, size);
+		device->upload_data(_cameraUniformBuffers[frameIndex], vertex_uniform);
+
+		device->upload_data(_sceneParameterBuffer, fragment_uniform);
 	}
 
 	Descriptor& Descriptor::add_uniform_layout()
@@ -36,16 +38,20 @@ namespace LearnVulkan {
 		// we use it from the vertex shader
 		bufferBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-		VkDescriptorSetLayoutCreateInfo setinfo = {};
-		setinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		setinfo.pNext = nullptr;
+		// binding for camera data at 0
+		VkDescriptorSetLayoutBinding cameraBind = vkinit::descriptorset_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 0);
 
-		// we are going to have 1 binding
-		setinfo.bindingCount = 1;
-		// no flags
+		// binding for scene data at 1
+		VkDescriptorSetLayoutBinding sceneBind = vkinit::descriptorset_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+
+		VkDescriptorSetLayoutBinding bindings[] = { cameraBind, sceneBind };
+
+		VkDescriptorSetLayoutCreateInfo setinfo = {};
+		setinfo.bindingCount = 2;
 		setinfo.flags = 0;
-		// point to the camera buffer binding
-		setinfo.pBindings = &bufferBinding;
+		setinfo.pNext = nullptr;
+		setinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		setinfo.pBindings = bindings;
 
 		VkDescriptorSetLayout layout;
 		vkCreateDescriptorSetLayout(device->_device, &setinfo, nullptr, &layout);
@@ -55,12 +61,16 @@ namespace LearnVulkan {
 		return *this;
 	}
 
-	Descriptor& Descriptor::add_uniform_descriptor_set(uint32_t frameNum, uint64_t size)
+	Descriptor& Descriptor::add_uniform_descriptor_set(uint32_t frameNum, uint64_t vertex_size, uint64_t fragment_size)
 	{
 		VkDescriptorSetLayout _layout = uniform_layouts.back();
 
+		// scene data buffer
+		const uint64_t sceneParamBufferSize = frameNum * device->pad_uniform_buffer_size(fragment_size);
+		_sceneParameterBuffer = device->create_buffer(sceneParamBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
 		for (uint32_t i = 0; i < frameNum; ++i) {
-			uniform_buffers[i].push_back(device->create_buffer(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU));
+			_cameraUniformBuffers.push_back(device->create_buffer(vertex_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU));
 
 			// allocate one descriptor set for each frame
 			VkDescriptorSetAllocateInfo allocInfo = {};
@@ -76,32 +86,25 @@ namespace LearnVulkan {
 			VkDescriptorSet descriptorSet;
 			vkAllocateDescriptorSets(device->_device, &allocInfo, &descriptorSet);
 
-			uniform_descriptorSets[i].push_back(descriptorSet);
+			_uniformDescriptorSets.push_back(descriptorSet);
 
-			// information about the buffer we want to point at in the descriptor
-			VkDescriptorBufferInfo binfo;
-			// it will be the camera buffer
-			binfo.buffer = uniform_buffers[i].back()._buffer;
-			// at 0 offset
-			binfo.offset = 0;
-			// of the size of a camera data struct
-			binfo.range = size;
+			VkDescriptorBufferInfo cameraInfo;
+			cameraInfo.buffer = _cameraUniformBuffers.back()._buffer;
+			cameraInfo.offset = 0;
+			cameraInfo.range = vertex_size;
 
-			VkWriteDescriptorSet setWrite = {};
-			setWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			setWrite.pNext = nullptr;
+			VkDescriptorBufferInfo sceneInfo;
+			sceneInfo.buffer = _sceneParameterBuffer._buffer;
+			sceneInfo.offset = 0;
+			sceneInfo.range = fragment_size;
 
-			// we are going to write into binding number 0
-			setWrite.dstBinding = 0;
-			// of the global descriptor
-			setWrite.dstSet = descriptorSet;
+			VkWriteDescriptorSet cameraWrite = vkinit::write_descriptor_buffer(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, descriptorSet, &cameraInfo, 0);
 
-			setWrite.descriptorCount = 1;
-			// and the type is uniform buffer
-			setWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			setWrite.pBufferInfo = &binfo;
+			VkWriteDescriptorSet sceneWrite = vkinit::write_descriptor_buffer(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, descriptorSet, &sceneInfo, 1);
 
-			vkUpdateDescriptorSets(device->_device, 1, &setWrite, 0, nullptr);
+			VkWriteDescriptorSet setWrites[] = { cameraWrite, sceneWrite };
+
+			vkUpdateDescriptorSets(device->_device, 2, setWrites, 0, nullptr);
 		}
 
 		return *this;
@@ -112,7 +115,8 @@ namespace LearnVulkan {
 		// create a descriptor pool that will hold 10 uniform buffers
 		std::vector<VkDescriptorPoolSize> sizes =
 		{
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10 }
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10 },
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 10 }
 		};
 
 		VkDescriptorPoolCreateInfo pool_info = {};
@@ -137,10 +141,10 @@ namespace LearnVulkan {
 			vkDestroyDescriptorSetLayout(device->_device, *iter, nullptr);
 		}
 
-		for (auto iter = uniform_buffers.begin(); iter != uniform_buffers.end(); ++iter) {
-			for (auto iter2 = (*iter).begin(); iter2 != (*iter).end(); ++iter2) {
-				vmaDestroyBuffer(device->_allocator, iter2->_buffer, iter2->_allocation);
-			}
+		for (auto iter = _cameraUniformBuffers.begin(); iter != _cameraUniformBuffers.end(); ++iter) {
+			vmaDestroyBuffer(device->_allocator, iter->_buffer, iter->_allocation);
 		}
+
+		vmaDestroyBuffer(device->_allocator, _sceneParameterBuffer._buffer, _sceneParameterBuffer._allocation);
 	}
 }

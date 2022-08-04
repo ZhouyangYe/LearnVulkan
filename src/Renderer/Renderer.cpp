@@ -4,6 +4,7 @@
 
 namespace LearnVulkan {
 	Renderer::CameraData Renderer::camData;
+	Renderer::SceneData Renderer::sceneData;
 
 	Renderer::Renderer()
 		: commandBuffer(&device), swapChain(&device), sync(&device), descriptor(&device)
@@ -25,7 +26,7 @@ namespace LearnVulkan {
 
 		swapChain.init_framebuffers(commandBuffer._renderPass);
 
-		descriptor.init_uniforms(FRAME_OVERLAP, sizeof(CameraData));
+		descriptor.init_uniforms(FRAME_OVERLAP, sizeof(CameraData), sizeof(SceneData));
 
 		// everything went fine
 		_isInitialized = true;
@@ -63,8 +64,13 @@ namespace LearnVulkan {
 	{
 		VkPipeline lastPipeline = nullptr;
 		VkBuffer lastBuffer = nullptr;
+		VkPipelineLayout lastLayout = nullptr;
 
-		descriptor.update_uniform_data(frameIndex, &camData, sizeof(CameraData));
+		GPUData camera_data{ &camData, sizeof(CameraData) };
+		//offset for our scene buffer
+		uint32_t scene_uniform_offset = device.pad_uniform_buffer_size(sizeof(SceneData)) * frameIndex;
+		GPUData scene_data{ &sceneData, sizeof(SceneData), scene_uniform_offset };
+		descriptor.update_uniform_data(frameIndex, camera_data, scene_data);
 
 		for (int i = 0; i < count; i++)
 		{
@@ -72,9 +78,21 @@ namespace LearnVulkan {
 
 			// only bind the pipeline if it doesn't match with the already bound one
 			if (object.pipeline != lastPipeline) {
-				commandBuffer.bind(object.pipeline, object.pipelineLayout, descriptor.uniform_descriptorSets[frameIndex]);
+				commandBuffer.bind(object.pipeline);
 				lastPipeline = object.pipeline;
 			}
+
+			if (object.pipelineLayout != lastLayout) {
+				//bind the descriptor set when changing pipeline
+				vkCmdBindDescriptorSets(commandBuffer._mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, object.pipelineLayout, 0, 1, &descriptor._uniformDescriptorSets[frameIndex], 1, &scene_uniform_offset);
+				lastLayout = object.pipelineLayout;
+			}
+
+			// upload push constants
+			MeshPushConstants constants;
+			// calculate mvp matrix
+			constants.renderMatrix = object.model;
+			upload_pushConstants(cmd, object.pipelineLayout, &constants);
 
 			// only bind the mesh if it's a different one from last bind
 			if (object.vertex_buffer._buffer != lastBuffer) {
@@ -83,12 +101,6 @@ namespace LearnVulkan {
 				vkCmdBindVertexBuffers(cmd, 0, 1, &object.vertex_buffer._buffer, &offset);
 				lastBuffer = object.vertex_buffer._buffer;
 			}
-
-			// upload push constants
-			MeshPushConstants constants;
-			// calculate mvp matrix
-			constants.renderMatrix = object.model;
-			upload_pushConstants(cmd, object.pipelineLayout, &constants);
 
 			// we can now draw
 			vkCmdDraw(cmd, object.vertice_num, 1, 0, 0);

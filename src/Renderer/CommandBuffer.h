@@ -24,7 +24,7 @@ namespace LearnVulkan {
 		void begin_renderPass(VkSwapchainKHR swapChain, uint32_t swapchainImageIndex, std::vector<VkFramebuffer>& _framebuffers);
 		void end_renderPass();
 
-		void bind(VkPipeline pipeline, VkPipelineLayout pipelineLayout, std::vector<VkDescriptorSet>& descriptorSets);
+		void bind(VkPipeline pipeline);
 
 		void setCommand(uint32_t index);
 	private:

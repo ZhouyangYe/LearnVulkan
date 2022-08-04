@@ -31,7 +31,7 @@ namespace LearnVulkan {
 		vkb::InstanceBuilder builder;
 
 		// make the vulkan instance, with basic debug features
-		auto inst_ret = builder.set_app_name("Example Vulkan Application")
+		auto inst_ret = builder.set_app_name("Hello Vulkan")
 			.request_validation_layers(bUseValidationLayers)
 			.use_default_debug_messenger()
 			.require_api_version(1, 1, 0)
@@ -69,6 +69,10 @@ namespace LearnVulkan {
 
 		_graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
 
+		_gpuProperties = vkbDevice.physical_device.properties;
+
+		Logger::console->info(fmt::format("The GPU has a minimum buffer alignment of: {}", _gpuProperties.limits.minUniformBufferOffsetAlignment));
+
 		// initialize the memory allocator
 		VmaAllocatorCreateInfo allocatorInfo = {};
 		allocatorInfo.physicalDevice = _chosenGPU;
@@ -102,21 +106,22 @@ namespace LearnVulkan {
 		return buffer;
 	}
 
-	void Device::upload_data(Buffer& buffer, const void* d, uint64_t size)
+	void Device::upload_data(Buffer& buffer, GPUData& d)
 	{
 		// copy data
-		void* data;
-		vmaMapMemory(_allocator, buffer._allocation, &data);
+		char* data;
+		vmaMapMemory(_allocator, buffer._allocation, (void**)&data);
 
-		memcpy(data, d, size);
+		data += d.offset;
+		memcpy(data, d.data, d.size);
 
 		vmaUnmapMemory(_allocator, buffer._allocation);
 	}
 
-	void Device::upload_vertex_data(Buffer& buffer, const void* data, uint64_t size)
+	void Device::upload_vertex_data(Buffer& buffer, GPUData& d)
 	{
-		buffer = create_buffer(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-		upload_data(buffer, data, size);
+		buffer = create_buffer(d.size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+		upload_data(buffer, d);
 	}
 
 	void Device::destroy_buffer(Buffer& buffer)
@@ -134,5 +139,16 @@ namespace LearnVulkan {
 	void Device::present(VkPresentInfoKHR& presentInfo)
 	{
 		VK_CHECK(vkQueuePresentKHR(_graphicsQueue, &presentInfo));
+	}
+
+	uint64_t Device::pad_uniform_buffer_size(uint64_t originalSize)
+	{
+		// Calculate required alignment based on minimum device offset alignment
+		size_t minUboAlignment = _gpuProperties.limits.minUniformBufferOffsetAlignment;
+		size_t alignedSize = originalSize;
+		if (minUboAlignment > 0) {
+			alignedSize = (alignedSize + minUboAlignment - 1) & ~(minUboAlignment - 1);
+		}
+		return alignedSize;
 	}
 }

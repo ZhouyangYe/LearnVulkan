@@ -18,6 +18,9 @@ namespace LearnVulkan {
 		model2 *= glm::rotate(glm::mat4{ 1.0f }, glm::radians(_frameNumber * -0.4f), { 0.f, 1.0f, 0.f });
 		_frameNumber++;
 
+		float framed = (_frameNumber / 120.f);
+		AppState::renderer.sceneData.ambientColor = { sin(framed),0,cos(framed),1 };
+
 		AppState::renderer.submit(GameState::Monkey::buffer, GameState::Monkey::pipelineLayout, GameState::Monkey::pipeline, GameState::Monkey::vertices.size(), model1);
 		AppState::renderer.submit(GameState::Monkey::buffer, GameState::Monkey::pipelineLayout, GameState::Monkey::pipeline, GameState::Monkey::vertices.size(), model2);
 	}
