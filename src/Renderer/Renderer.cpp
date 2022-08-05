@@ -66,11 +66,11 @@ namespace LearnVulkan {
 		VkBuffer lastBuffer = nullptr;
 		VkPipelineLayout lastLayout = nullptr;
 
-		GPUData camera_data{ &camData, sizeof(CameraData) };
+		uint32_t offsets[2] = { descriptor.alignedCameraDataSize * frameIndex, descriptor.alignedSceneDataSize * frameIndex };
+		GPUData camera_data{ &camData, sizeof(CameraData), offsets[0] };
 		//offset for our scene buffer
-		uint32_t scene_uniform_offset = device.pad_uniform_buffer_size(sizeof(SceneData)) * frameIndex;
-		GPUData scene_data{ &sceneData, sizeof(SceneData), scene_uniform_offset };
-		descriptor.update_uniform_data(frameIndex, camera_data, scene_data);
+		GPUData scene_data{ &sceneData, sizeof(SceneData), offsets[1] };
+		descriptor.update_uniform_data(camera_data, scene_data);
 
 		for (int i = 0; i < count; i++)
 		{
@@ -84,7 +84,7 @@ namespace LearnVulkan {
 
 			if (object.pipelineLayout != lastLayout) {
 				//bind the descriptor set when changing pipeline
-				vkCmdBindDescriptorSets(commandBuffer._mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, object.pipelineLayout, 0, 1, &descriptor._uniformDescriptorSets[frameIndex], 1, &scene_uniform_offset);
+				vkCmdBindDescriptorSets(commandBuffer._mainCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, object.pipelineLayout, 0, descriptor._descriptorSets.size(), descriptor._descriptorSets.data(), 2, offsets);
 				lastLayout = object.pipelineLayout;
 			}
 
