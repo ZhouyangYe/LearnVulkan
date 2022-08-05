@@ -12,7 +12,34 @@ namespace LearnVulkan {
 			vkDestroyCommandPool(device->_device, *iter, nullptr);
 		}
 
+		vkDestroyCommandPool(device->_device, uploadCommandPool, nullptr);
+
 		vkDestroyRenderPass(device->_device, _renderPass, nullptr);
+	}
+
+	void CommandBuffer::immediate_submit(VkFence _uploadFence, std::function<void(VkCommandBuffer cmd)>&& function)
+	{
+		// begin the command buffer recording. We will use this command buffer exactly once before resetting, so we tell vulkan that
+		VkCommandBufferBeginInfo cmdBeginInfo = vkinit::command_buffer_begin_info(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+		VK_CHECK(vkBeginCommandBuffer(uploadCommandBuffer, &cmdBeginInfo));
+
+		// execute the function
+		function(uploadCommandBuffer);
+
+		VK_CHECK(vkEndCommandBuffer(uploadCommandBuffer));
+
+		VkSubmitInfo submit = vkinit::submit_info(&uploadCommandBuffer);
+
+		// submit command buffer to the queue and execute it.
+		// _uploadFence will now block until the graphic commands finish execution
+		VK_CHECK(vkQueueSubmit(device->_graphicsQueue, 1, &submit, _uploadFence));
+
+		vkWaitForFences(device->_device, 1, &_uploadFence, true, 9999999999);
+		vkResetFences(device->_device, 1, &_uploadFence);
+
+		// reset the command buffers inside the command pool
+		vkResetCommandPool(device->_device, uploadCommandPool, 0);
 	}
 
 	void CommandBuffer::init_commands(uint32_t num)
@@ -32,6 +59,16 @@ namespace LearnVulkan {
 
 			VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &_commandBuffers[i]));
 		}
+
+		// command buffer for uploading data to gpu
+		VkCommandPoolCreateInfo uploadCommandPoolInfo = vkinit::command_pool_create_info(device->_graphicsQueueFamily);
+		//create pool for upload context
+		VK_CHECK(vkCreateCommandPool(device->_device, &uploadCommandPoolInfo, nullptr, &uploadCommandPool));
+
+		//allocate the default command buffer that we will use for the instant commands
+		VkCommandBufferAllocateInfo cmdAllocInfo = vkinit::command_buffer_allocate_info(uploadCommandPool, 1);
+
+		VK_CHECK(vkAllocateCommandBuffers(device->_device, &cmdAllocInfo, &uploadCommandBuffer));
 	}
 
 	void CommandBuffer::init_renderpass(float clearColor[4], VkFormat swapchainImageFormat, VkFormat depthFormat)

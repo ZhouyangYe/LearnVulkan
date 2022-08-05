@@ -183,4 +183,21 @@ namespace LearnVulkan {
 		// TODO: design a data structure to optimize this
 		renderable_objects.emplace_back(buffer, pipelineLayout, pipeline, vertice_num, model);
 	}
+
+	void Renderer::upload_vertex_data(Buffer& buffer, GPUData& d)
+	{
+		// TODO: VMA_MEMORY_USAGE_CPU_ONLY is deprecated, use VMA_MEMORY_USAGE_AUTO and flags
+		Buffer cpu_temp_buffer = device.create_buffer(d.size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+		device.upload_data(cpu_temp_buffer, d);
+		buffer = device.create_buffer(d.size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+
+		commandBuffer.immediate_submit(sync._uploadFence, [=](VkCommandBuffer cmd) {
+			VkBufferCopy copy;
+			copy.dstOffset = 0;
+			copy.srcOffset = 0;
+			copy.size = d.size;
+			vkCmdCopyBuffer(cmd, cpu_temp_buffer._buffer, buffer._buffer, 1, &copy);
+		});
+		vmaDestroyBuffer(device._allocator, cpu_temp_buffer._buffer, cpu_temp_buffer._allocation);
+	}
 }

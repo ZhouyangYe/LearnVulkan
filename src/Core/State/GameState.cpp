@@ -36,7 +36,7 @@ namespace LearnVulkan {
 		Triangle::vertices[2].color = { 0.f, 1.f, 1.0f };
 
 		GPUData triangle_data{ Triangle::vertices.data(), 3 * sizeof(AppState::PosColorNormalVertex)  };
-		AppState::renderer.device.upload_vertex_data(Triangle::buffer, triangle_data);
+		AppState::renderer.upload_vertex_data(Triangle::buffer, triangle_data);
 
 		Triangle::pipelines.push_back(0);
 		Triangle::pipelines.push_back(1);
@@ -54,7 +54,7 @@ namespace LearnVulkan {
 			}
 
 			GPUData monkey_data{ Monkey::vertices.data(), Monkey::vertices.size() * sizeof(AppState::PosColorNormalVertex) };
-			AppState::renderer.device.upload_vertex_data(Monkey::buffer, monkey_data);
+			AppState::renderer.upload_vertex_data(Monkey::buffer, monkey_data);
 		}
 		catch (Error err) {
 			Logger::console->error(err.desc);

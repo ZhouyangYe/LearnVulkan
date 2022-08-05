@@ -15,6 +15,9 @@ namespace LearnVulkan {
 		VkSemaphore _presentSemaphore, _renderSemaphore;
 		VkFence _renderFence;
 
+		// fence for uploading data to gpu
+		VkFence _uploadFence;
+
 		Synchronization(Device* device);
 		~Synchronization();
 

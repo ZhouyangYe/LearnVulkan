@@ -8,6 +8,8 @@ namespace LearnVulkan {
 	void Synchronization::Destroy()
 	{
 		// destroy sync objects
+		vkDestroyFence(device->_device, _uploadFence, nullptr);
+
 		for (auto iter = locks.begin(); iter != locks.end(); ++iter) {
 			vkDestroyFence(device->_device, iter->_renderFence, nullptr);
 			vkDestroySemaphore(device->_device, iter->_renderSemaphore, nullptr);
@@ -18,6 +20,9 @@ namespace LearnVulkan {
 	void Synchronization::init_sync_structures(uint32_t num)
 	{
 		locks.resize(num);
+
+		VkFenceCreateInfo uploadFenceCreateInfo = vkinit::fence_create_info();
+		VK_CHECK(vkCreateFence(device->_device, &uploadFenceCreateInfo, nullptr, &_uploadFence));
 
 		// create syncronization structures
 		// one fence to control when the gpu has finished rendering the frame,

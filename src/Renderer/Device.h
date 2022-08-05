@@ -14,6 +14,7 @@ namespace LearnVulkan {
 		VmaAllocator _allocator; // vma lib allocator
 		VkDevice _device;
 		uint32_t _graphicsQueueFamily;
+		VkQueue _graphicsQueue;
 		VkPhysicalDevice _chosenGPU;
 		VkPhysicalDeviceProperties _gpuProperties;
 		Window* window = NULL;
@@ -30,9 +31,8 @@ namespace LearnVulkan {
 		uint64_t pad_uniform_buffer_size(uint64_t originalSize);
 
 		void init_vulkan(Window* window);
-		Buffer create_buffer(uint64_t size, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
+		Buffer create_buffer(uint64_t size, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_AUTO, VmaAllocationCreateFlags flags = 0);
 		void upload_data(Buffer& buffer, GPUData& data);
-		void upload_vertex_data(Buffer& buffer, GPUData& data);
 		void destroy_buffer(Buffer& buffer);
 
 		void submit(VkSubmitInfo& submitInfo, VkFence renderFence);
@@ -40,7 +40,5 @@ namespace LearnVulkan {
 	private:
 		VkInstance _instance;
 		VkDebugUtilsMessengerEXT _debug_messenger;
-
-		VkQueue _graphicsQueue;
 	};
 }

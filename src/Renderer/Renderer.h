@@ -68,6 +68,7 @@ namespace LearnVulkan {
 		void Draw();
 
 		void upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data);
+		void upload_vertex_data(Buffer& buffer, GPUData& data);
 		void submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:

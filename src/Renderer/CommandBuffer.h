@@ -11,6 +11,10 @@ namespace LearnVulkan {
 		VkCommandBuffer _mainCommandBuffer;
 		std::vector<VkCommandPool> _commandPools;
 
+		VkCommandPool uploadCommandPool;
+		VkCommandBuffer uploadCommandBuffer;
+		void immediate_submit(VkFence _uploadFence, std::function<void(VkCommandBuffer cmd)>&& function);
+
 		CommandBuffer(Device* device);
 		~CommandBuffer();
 

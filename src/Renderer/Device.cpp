@@ -81,7 +81,7 @@ namespace LearnVulkan {
 		vmaCreateAllocator(&allocatorInfo, &_allocator);
 	}
 
-	Buffer Device::create_buffer(uint64_t size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
+	Buffer Device::create_buffer(uint64_t size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags)
 	{
 		// allocate vertex buffer
 		VkBufferCreateInfo bufferInfo = {};
@@ -94,6 +94,7 @@ namespace LearnVulkan {
 		// let the VMA library know that this data should be writeable by CPU, but also readable by GPU
 		VmaAllocationCreateInfo vmaallocInfo = {};
 		vmaallocInfo.usage = memoryUsage;
+		vmaallocInfo.flags = flags;
 
 		Buffer buffer;
 
@@ -116,12 +117,6 @@ namespace LearnVulkan {
 		memcpy(data, d.data, d.size);
 
 		vmaUnmapMemory(_allocator, buffer._allocation);
-	}
-
-	void Device::upload_vertex_data(Buffer& buffer, GPUData& d)
-	{
-		buffer = create_buffer(d.size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-		upload_data(buffer, d);
 	}
 
 	void Device::destroy_buffer(Buffer& buffer)
