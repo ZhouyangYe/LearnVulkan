@@ -10,13 +10,17 @@ namespace LearnVulkan {
 		ImageBuffer image;
 		VkImageView imageView;
 
+		VkDescriptorSet textureSet;
+
 		Renderer* renderer;
 
 		Texture(Renderer& renderer, const char* file);
 		~Texture();
 
+		void create_set();
+
 		void Destroy();
 	private:
-		void load_image_from_file(const char* file, ImageBuffer& outImage);
+		void load_image_from_file(const char* file);
 	};
 }

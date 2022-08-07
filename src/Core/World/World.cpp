@@ -24,7 +24,7 @@ namespace LearnVulkan {
 		AppState::renderer.submit(GameState::Monkey::buffer, GameState::Monkey::pipelineLayout, GameState::Monkey::pipeline, GameState::Monkey::vertices.size(), model2);*/
 
 		glm::mat4 model(1);
-		AppState::renderer.submit(GameState::Terrain::buffer, GameState::Terrain::pipelineLayout, GameState::Terrain::pipeline, GameState::Terrain::vertices.size(), model);
+		AppState::renderer.submit(GameState::Terrain::buffer, GameState::Terrain::pipelineLayout, GameState::Terrain::pipeline, GameState::Terrain::vertices.size(), model, AppState::textures[0].textureSet);
 
 		_frameNumber++;
 	}

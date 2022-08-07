@@ -5,7 +5,7 @@
 
 namespace LearnVulkan {
 	Texture::Texture(Renderer& renderer, const char* file) : renderer(&renderer) {
-		load_image_from_file(file, image);
+		load_image_from_file(file);
 
 		VkImageViewCreateInfo imageinfo = vkinit::imageview_create_info(VK_FORMAT_R8G8B8A8_SRGB, image._image, VK_IMAGE_ASPECT_COLOR_BIT);
 		vkCreateImageView(renderer.device._device, &imageinfo, nullptr, &imageView);
@@ -13,7 +13,13 @@ namespace LearnVulkan {
 
 	Texture::~Texture() {}
 
-	void Texture::load_image_from_file(const char* file, ImageBuffer& outImage)
+	void Texture::create_set()
+	{
+		renderer->descriptor.add_texture_layout().add_texture_descriptor_set(imageView);
+		textureSet = renderer->descriptor._textureSets.back();
+	}
+
+	void Texture::load_image_from_file(const char* file)
 	{
 		int texWidth, texHeight, texChannels;
 
@@ -23,11 +29,8 @@ namespace LearnVulkan {
 			throw Error(fmt::format("Failed to load texture file: {}", file));
 		}
 
-		// TODO: remove this
-		Logger::console->info(texChannels);
-
 		void* pixel_ptr = pixels;
-		VkDeviceSize imageSize = texWidth * texHeight * 4;
+		VkDeviceSize imageSize = texWidth * texHeight * texChannels;
 
 		// the format R8G8B8A8 matches exactly with the pixels loaded from stb_image lib
 		VkFormat image_format = VK_FORMAT_R8G8B8A8_SRGB;
@@ -48,13 +51,11 @@ namespace LearnVulkan {
 
 		VkImageCreateInfo dimg_info = vkinit::image_create_info(image_format, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, imageExtent);
 
-		ImageBuffer newImage;
-
 		VmaAllocationCreateInfo dimg_allocinfo = {};
 		dimg_allocinfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; // TODO: don't use VMA_MEMORY_USAGE_GPU_ONLY, it's deprecated
 
 		//allocate and create the image
-		vmaCreateImage(renderer->device._allocator, &dimg_info, &dimg_allocinfo, &newImage._image, &newImage._allocation, nullptr);
+		vmaCreateImage(renderer->device._allocator, &dimg_info, &dimg_allocinfo, &image._image, &image._allocation, nullptr);
 
 		renderer->commandBuffer.immediate_submit(renderer->sync._uploadFence, [&](VkCommandBuffer cmd) {
 			VkImageSubresourceRange range;
@@ -69,7 +70,7 @@ namespace LearnVulkan {
 
 			imageBarrier_toTransfer.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			imageBarrier_toTransfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-			imageBarrier_toTransfer.image = newImage._image;
+			imageBarrier_toTransfer.image = image._image;
 			imageBarrier_toTransfer.subresourceRange = range;
 
 			imageBarrier_toTransfer.srcAccessMask = 0;
@@ -90,7 +91,7 @@ namespace LearnVulkan {
 			copyRegion.imageExtent = imageExtent;
 
 			//copy the buffer into the image
-			vkCmdCopyBufferToImage(cmd, stagingBuffer._buffer, newImage._image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+			vkCmdCopyBufferToImage(cmd, stagingBuffer._buffer, image._image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 			VkImageMemoryBarrier imageBarrier_toReadable = imageBarrier_toTransfer;
 
@@ -106,13 +107,12 @@ namespace LearnVulkan {
 
 		vmaDestroyBuffer(renderer->device._allocator, stagingBuffer._buffer, stagingBuffer._allocation);
 
-		Logger::console->info(fmt::format("Texture loaded successfully: ", file));
-
-		outImage = newImage;
+		Logger::console->info(fmt::format("Texture loaded successfully: {}", file));
 	}
 
 	void Texture::Destroy()
 	{
+		vkDestroyImageView(renderer->device._device, imageView, nullptr);
 		vmaDestroyImage(renderer->device._allocator, image._image, image._allocation);
 	}
 }

@@ -88,6 +88,11 @@ namespace LearnVulkan {
 				lastLayout = object.pipelineLayout;
 			}
 
+			if (object.textureSet != VK_NULL_HANDLE) {
+				//texture descriptor
+				vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, object.pipelineLayout, 1, 1, &object.textureSet, 0, nullptr);
+			}
+
 			// upload push constants
 			MeshPushConstants constants;
 			// calculate mvp matrix
@@ -178,10 +183,10 @@ namespace LearnVulkan {
 		camData.projection_view = p * v;
 	}
 
-	void Renderer::submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model)
+	void Renderer::submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model, VkDescriptorSet textureSet)
 	{
 		// TODO: design a data structure to optimize this
-		renderable_objects.emplace_back(buffer, pipelineLayout, pipeline, vertice_num, model);
+		renderable_objects.emplace_back(buffer, pipelineLayout, pipeline, vertice_num, model, textureSet);
 	}
 
 	void Renderer::upload_vertex_data(Buffer& buffer, GPUData& d)

@@ -13,7 +13,7 @@ namespace LearnVulkan {
 		alignedCameraDataSize = device->pad_uniform_buffer_size(sizeof(camera_size));
 		alignedSceneDataSize = device->pad_uniform_buffer_size(sizeof(scene_size));
 
-		add_uniform_layout().add_uniform_descriptor_set(frameNum, camera_size, scene_size).add_texture_layout();
+		add_uniform_layout().add_uniform_descriptor_set(frameNum, camera_size, scene_size);
 	}
 
 	void Descriptor::update_uniform_data(GPUData& camera_uniform, GPUData& scene_uniform)
@@ -29,16 +29,6 @@ namespace LearnVulkan {
 		if (!descriptorPools.size()) {
 			add_description_pool();
 		}
-
-		// information about the binding.
-		VkDescriptorSetLayoutBinding bufferBinding = {};
-		bufferBinding.binding = 0;
-		bufferBinding.descriptorCount = 1;
-		// it's a uniform buffer binding
-		bufferBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-
-		// we use it from the vertex shader
-		bufferBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 		// binding for camera data at 0
 		VkDescriptorSetLayoutBinding cameraBind = vkinit::descriptorset_layout_binding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, VK_SHADER_STAGE_VERTEX_BIT, 0);
@@ -68,17 +58,17 @@ namespace LearnVulkan {
 		//another set, one that holds a single texture
 		VkDescriptorSetLayoutBinding textureBind = vkinit::descriptorset_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0);
 
-		VkDescriptorSetLayoutCreateInfo set3info = {};
-		set3info.bindingCount = 1;
-		set3info.flags = 0;
-		set3info.pNext = nullptr;
-		set3info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		set3info.pBindings = &textureBind;
+		VkDescriptorSetLayoutCreateInfo setinfo = {};
+		setinfo.bindingCount = 1;
+		setinfo.flags = 0;
+		setinfo.pNext = nullptr;
+		setinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		setinfo.pBindings = &textureBind;
 
 		VkDescriptorSetLayout _textureLayout;
-		vkCreateDescriptorSetLayout(device->_device, &set3info, nullptr, &_textureLayout);
+		vkCreateDescriptorSetLayout(device->_device, &setinfo, nullptr, &_textureLayout);
 
-		_layouts.push_back(_textureLayout);
+		_textureLayouts.push_back(_textureLayout);
 
 		return *this;
 	}
@@ -129,6 +119,42 @@ namespace LearnVulkan {
 		return *this;
 	}
 
+	Descriptor& Descriptor::add_texture_descriptor_set(VkImageView imageView)
+	{
+		//create a sampler for the texture
+		VkSamplerCreateInfo samplerInfo = vkinit::sampler_create_info(VK_FILTER_NEAREST);
+
+		VkSampler sampler;
+		vkCreateSampler(device->_device, &samplerInfo, nullptr, &sampler);
+
+		VkDescriptorSet textureSet;
+
+		//allocate the descriptor set for single-texture to use on the material
+		VkDescriptorSetAllocateInfo allocInfo = {};
+		allocInfo.pNext = nullptr;
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = _descriptorPool;
+		allocInfo.descriptorSetCount = 1;
+		allocInfo.pSetLayouts = &_textureLayouts.back();
+
+		vkAllocateDescriptorSets(device->_device, &allocInfo, &textureSet);
+
+		//write to the descriptor set so that it points to our empire_diffuse texture
+		VkDescriptorImageInfo imageBufferInfo;
+		imageBufferInfo.sampler = sampler;
+		imageBufferInfo.imageView = imageView;
+		imageBufferInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+		VkWriteDescriptorSet textureWrite = vkinit::write_descriptor_image(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, textureSet, &imageBufferInfo, 0);
+
+		vkUpdateDescriptorSets(device->_device, 1, &textureWrite, 0, nullptr);
+
+		_samplers.push_back(sampler);
+		_textureSets.push_back(textureSet);
+
+		return *this;
+	}
+
 	void Descriptor::add_description_pool()
 	{
 		// create a descriptor pool that will hold 10 uniform buffers
@@ -159,6 +185,14 @@ namespace LearnVulkan {
 
 		for (auto iter = _layouts.begin(); iter != _layouts.end(); ++iter) {
 			vkDestroyDescriptorSetLayout(device->_device, *iter, nullptr);
+		}
+
+		for (auto iter = _textureLayouts.begin(); iter != _textureLayouts.end(); ++iter) {
+			vkDestroyDescriptorSetLayout(device->_device, *iter, nullptr);
+		}
+
+		for (auto iter = _samplers.begin(); iter != _samplers.end(); ++iter) {
+			vkDestroySampler(device->_device, *iter, nullptr);
 		}
 
 		vmaDestroyBuffer(device->_allocator, _defaultUniformBuffer._buffer, _defaultUniformBuffer._allocation);

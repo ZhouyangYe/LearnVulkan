@@ -57,7 +57,7 @@ namespace LearnVulkan {
 		}
 	}
 
-	Pipeline::Pipeline(Device* device, VkRenderPass* renderPass) : device(device), _renderPass(renderPass) {
+	Pipeline::Pipeline(Device* device, VkRenderPass* renderPass, Descriptor* descriptor) : device(device), _renderPass(renderPass), descriptor(descriptor) {
 		add_constant(sizeof(MeshPushConstants));
 	}
 
@@ -129,9 +129,15 @@ namespace LearnVulkan {
 
 		VkPipelineLayout pipelineLayout;
 
+		std::vector<VkDescriptorSetLayout> combined_layouts = descriptor->_layouts;
+		// combine custom layouts and default descriptor layouts
+		for (auto iter = descriptorLayouts.begin(); iter != descriptorLayouts.end(); ++iter) {
+			combined_layouts.push_back(*iter);
+		}
+
 		// build the pipeline layout that controls the inputs/outputs of the shader
 		// add default push_constants, for instance: MVP
-		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants, descriptorLayouts);
+		VkPipelineLayoutCreateInfo pipeline_layout_info = vkinit::pipeline_layout_create_info(constants, combined_layouts);
 
 		VK_CHECK(vkCreatePipelineLayout(device->_device, &pipeline_layout_info, nullptr, &pipelineLayout));
 

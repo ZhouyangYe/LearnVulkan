@@ -18,6 +18,7 @@ namespace LearnVulkan {
 			VkPipeline pipeline;
 			uint32_t vertice_num;
 			glm::mat4 model;
+			VkDescriptorSet textureSet{ VK_NULL_HANDLE };
 		};
 
 		struct CameraData {
@@ -69,7 +70,7 @@ namespace LearnVulkan {
 
 		void upload_pushConstants(VkCommandBuffer cmd, VkPipelineLayout pipelineLayout, const void* data);
 		void upload_vertex_data(Buffer& buffer, GPUData& data);
-		void submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model);
+		void submit(Buffer& buffer, VkPipelineLayout pipelineLayout, VkPipeline pipeline, uint32_t vertice_num, glm::mat4& model, VkDescriptorSet textureSet = VK_NULL_HANDLE);
 		static void setViewTransform(glm::mat4& view, glm::mat4& projection);
 	private:
 		static CameraData camData;

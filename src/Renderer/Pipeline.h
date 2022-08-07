@@ -3,6 +3,7 @@
 #include "Device.h"
 #include "VertexLayout.h"
 #include "Helper.h"
+#include "Descriptor.h"
 #include "Events/Error.h"
 
 namespace LearnVulkan {
@@ -32,7 +33,7 @@ namespace LearnVulkan {
 		std::vector<VkPipelineLayout> layouts;
 		std::vector<VkPipeline> pipelines;
 
-		Pipeline(Device* device, VkRenderPass* renderPass);
+		Pipeline(Device* device, VkRenderPass* renderPass, Descriptor* descriptor);
 		~Pipeline();
 
 		uint32_t constant_offset = 0;
@@ -47,6 +48,7 @@ namespace LearnVulkan {
 	private:
 		Device* device;
 		VkRenderPass* _renderPass;
+		Descriptor* descriptor;
 		// build the stage-create-info for both vertex and fragment stages. This lets the pipeline know the shader modules per stage
 		PipelineBuilder pipelineBuilder;
 		std::vector<VkPushConstantRange> constants;

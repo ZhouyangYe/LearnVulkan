@@ -3,6 +3,7 @@
 #include "Core/Cursor.h"
 #include "Core/Time.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/Texture.h"
 #include "Camera/Camera.h"
 
 namespace LearnVulkan {
@@ -28,6 +29,8 @@ namespace LearnVulkan {
 					.end();
 			};
 		};
+
+		static std::vector<Texture> textures;
 
 		static Window window;
 		static Renderer renderer;
