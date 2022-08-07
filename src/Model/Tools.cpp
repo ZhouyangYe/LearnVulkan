@@ -51,8 +51,11 @@ namespace LearnVulkan {
 					tinyobj::real_t nx = attrib.normals[3 * idx.normal_index + 0];
 					tinyobj::real_t ny = attrib.normals[3 * idx.normal_index + 1];
 					tinyobj::real_t nz = attrib.normals[3 * idx.normal_index + 2];
+					//vertex uv
+					tinyobj::real_t ux = attrib.texcoords[2 * idx.texcoord_index + 0];
+					tinyobj::real_t uy = attrib.texcoords[2 * idx.texcoord_index + 1];
 
-					result.emplace_back(glm::vec3{ vx, vy, vz }, glm::vec3{ nx, ny, nz });
+					result.emplace_back(glm::vec3{ vx, vy, vz }, glm::vec3{ nx, ny, nz }, glm::vec2{ ux, 1 - uy });
 				}
 				index_offset += fv;
 			}

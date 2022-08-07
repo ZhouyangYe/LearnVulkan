@@ -12,7 +12,8 @@ namespace LearnVulkan {
 	{
 		alignedCameraDataSize = device->pad_uniform_buffer_size(sizeof(camera_size));
 		alignedSceneDataSize = device->pad_uniform_buffer_size(sizeof(scene_size));
-		add_uniform_layout().add_uniform_descriptor_set(frameNum, camera_size, scene_size);
+
+		add_uniform_layout().add_uniform_descriptor_set(frameNum, camera_size, scene_size).add_texture_layout();
 	}
 
 	void Descriptor::update_uniform_data(GPUData& camera_uniform, GPUData& scene_uniform)
@@ -58,6 +59,26 @@ namespace LearnVulkan {
 		vkCreateDescriptorSetLayout(device->_device, &setinfo, nullptr, &layout);
 
 		_layouts.push_back(layout);
+
+		return *this;
+	}
+
+	Descriptor& Descriptor::add_texture_layout()
+	{
+		//another set, one that holds a single texture
+		VkDescriptorSetLayoutBinding textureBind = vkinit::descriptorset_layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0);
+
+		VkDescriptorSetLayoutCreateInfo set3info = {};
+		set3info.bindingCount = 1;
+		set3info.flags = 0;
+		set3info.pNext = nullptr;
+		set3info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		set3info.pBindings = &textureBind;
+
+		VkDescriptorSetLayout _textureLayout;
+		vkCreateDescriptorSetLayout(device->_device, &set3info, nullptr, &_textureLayout);
+
+		_layouts.push_back(_textureLayout);
 
 		return *this;
 	}
@@ -113,7 +134,9 @@ namespace LearnVulkan {
 		// create a descriptor pool that will hold 10 uniform buffers
 		std::vector<VkDescriptorPoolSize> sizes =
 		{
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 10 }
+			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 10 },
+			//add combined-image-sampler descriptor types to the pool
+			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10 }
 		};
 
 		VkDescriptorPoolCreateInfo pool_info = {};

@@ -8,11 +8,12 @@
 namespace LearnVulkan {
 	class AppState {
 	public:
-		struct PosColorNormalVertex
+		struct PosColorNormalUVVertex
 		{
 			glm::vec3 position;
 			glm::vec3 normal;
 			glm::vec3 color;
+			glm::vec2 uv;
 
 			static VertexLayout layout;
 			static void Init()
@@ -22,6 +23,7 @@ namespace LearnVulkan {
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
 					.add(VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 3)
+					.add(VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 2)
 					.add_binding()
 					.end();
 			};

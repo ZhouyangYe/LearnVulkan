@@ -26,6 +26,7 @@ namespace LearnVulkan {
 		void init_uniforms(uint32_t frameNum, uint64_t camera_size, uint64_t scene_size);
 		void update_uniform_data(GPUData& camera_uniform, GPUData& scene_uniform);
 		Descriptor& add_uniform_layout();
+		Descriptor& add_texture_layout();
 		Descriptor& add_uniform_descriptor_set(uint32_t frameNum, uint64_t camera_size, uint64_t scene_size);
 
 		void add_description_pool();

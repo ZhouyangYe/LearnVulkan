@@ -9,7 +9,7 @@ namespace LearnVulkan {
 			static Buffer buffer;
 			static VkPipelineLayout pipelineLayout;
 			static VkPipeline pipeline;
-			static std::vector<AppState::PosColorNormalVertex> vertices;
+			static std::vector<AppState::PosColorNormalUVVertex> vertices;
 
 			static uint32_t selectedPipelineIndex;
 			static std::vector<uint32_t> pipelines;
@@ -21,7 +21,14 @@ namespace LearnVulkan {
 			static Buffer buffer;
 			static VkPipelineLayout pipelineLayout;
 			static VkPipeline pipeline;
-			static std::vector<AppState::PosColorNormalVertex> vertices;
+			static std::vector<AppState::PosColorNormalUVVertex> vertices;
+		};
+
+		struct Terrain {
+			static Buffer buffer;
+			static VkPipelineLayout pipelineLayout;
+			static VkPipeline pipeline;
+			static std::vector<AppState::PosColorNormalUVVertex> vertices;
 		};
 
 		static void Init();

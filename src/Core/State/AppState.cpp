@@ -8,7 +8,7 @@ namespace LearnVulkan {
 	Time AppState::time(&AppState::window);
 	Camera AppState::camera(&AppState::time);
 
-	VertexLayout AppState::PosColorNormalVertex::layout;
+	VertexLayout AppState::PosColorNormalUVVertex::layout;
 
 	void AppState::Init() {
 		// initialize window
@@ -24,11 +24,10 @@ namespace LearnVulkan {
 		camera.Init({ { windowProps.width, windowProps.height }, 200.0f, { 0.f, 0.f, 0.f } });
 
 		// create pipelines
-		PosColorNormalVertex::Init();
+		PosColorNormalUVVertex::Init();
 		pipeline
-			// first layout
 			.init_layout(renderer.descriptor._layouts)             // layouts 0
-			.init_vertex_layout(PosColorNormalVertex::layout)
+			.init_vertex_layout(PosColorNormalUVVertex::layout)
 			.add_pipeline("shader1")                               // pipelines 0
 			.add_pipeline("shader2");                              // pipelines 1
 	}
