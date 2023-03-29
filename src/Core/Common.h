@@ -26,5 +26,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
-#define RESOURCE_FOLDER "C:\\BrighT\\Dev\\LearnVulkan\\resources"
-#define SHADER_FOLDER "C:\\BrighT\\Dev\\LearnVulkan\\resources\\shaders\\bin"
+#define ROOT_FOLDER "E:\\BrighT\\Dev\\LearnVulkan"
+
+extern const std::string RESOURCE_FOLDER;
+extern const std::string SHADER_FOLDER;

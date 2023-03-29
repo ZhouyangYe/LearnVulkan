@@ -64,11 +64,11 @@ project "LearnVulkan"
     }
     libdirs
     {
-      "C:/VulkanSDK/1.3.211.0/Lib",
+      "C:/VulkanSDK/1.3.239.0/Lib",
     }
     sysincludedirs
     {
-      "C:/VulkanSDK/1.3.211.0/Include",
+      "C:/VulkanSDK/1.3.239.0/Include",
     }
 
   filter "configurations:Debug"

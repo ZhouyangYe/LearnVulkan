@@ -10,8 +10,8 @@ namespace LearnVulkan {
 
 	void Descriptor::init_uniforms(uint32_t frameNum, uint64_t camera_size, uint64_t scene_size)
 	{
-		alignedCameraDataSize = device->pad_uniform_buffer_size(sizeof(camera_size));
-		alignedSceneDataSize = device->pad_uniform_buffer_size(sizeof(scene_size));
+		alignedCameraDataSize = device->pad_uniform_buffer_size(camera_size);
+		alignedSceneDataSize = device->pad_uniform_buffer_size(scene_size);
 
 		add_uniform_layout().add_uniform_descriptor_set(frameNum, camera_size, scene_size);
 	}

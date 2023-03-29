@@ -17,8 +17,8 @@ namespace LearnVulkan {
 
 			WindowProps(
 				const std::string& title = "Learn Vulkan",
-				uint32_t width = 800,
-				uint32_t height = 600
+				uint32_t width = 1024,
+				uint32_t height = 768
 			)
 				: title(title), width(width), height(height)
 			{

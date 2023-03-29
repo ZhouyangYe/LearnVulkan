@@ -48,7 +48,6 @@ namespace LearnVulkan {
 		Triangle::pipeline = AppState::pipeline.pipelines[0];
 		Triangle::pipelineLayout = AppState::pipeline.layouts[0];
 
-
 		// set up monkey data
 		try {
 			Monkey::pipeline = AppState::pipeline.pipelines[0];
@@ -74,8 +73,8 @@ namespace LearnVulkan {
 				Terrain::vertices.emplace_back(iter->position, iter->normal, iter->normal, iter->uv);
 			}
 
-			GPUData monkey_data{ Terrain::vertices.data(), Terrain::vertices.size() * sizeof(AppState::PosColorNormalUVVertex) };
-			AppState::renderer.upload_vertex_data(Terrain::buffer, monkey_data);
+			GPUData terrain_data{ Terrain::vertices.data(), Terrain::vertices.size() * sizeof(AppState::PosColorNormalUVVertex) };
+			AppState::renderer.upload_vertex_data(Terrain::buffer, terrain_data);
 		}
 		catch (Error err) {
 			Logger::console->error(err.desc);
